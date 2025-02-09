@@ -1,26 +1,28 @@
 export default class AddressEntity {
-  private id: string;
+  private id: string | null;
   private street: string;
   private neighbourhood: string;
   private state: string;
   private city: string;
   private country: string;
-  private zipcode: string;
+  private zipCode: string;
   private houseNumber: string;
+  private complement: string | null;
   private userId: string;
-  private createdAt: Date;
+  private createdAt: Date | null;
 
   constructor(
-    id: string,
+    id: string | null,
     street: string,
     neighbourhood: string,
     state: string,
     city: string,
     country: string,
-    zipcode: string,
+    zipCode: string,
     houseNumber: string,
+    complement: string | null,
     userId: string,
-    createdAt: Date
+    createdAt: Date | null
   ) {
     this.id = id;
     this.street = street;
@@ -28,16 +30,17 @@ export default class AddressEntity {
     this.state = state;
     this.city = city;
     this.country = country;
-    this.zipcode = zipcode;
+    this.zipCode = zipCode;
     this.houseNumber = houseNumber;
+    this.complement = complement;
     this.userId = userId;
     this.createdAt = createdAt;
   }
 
-  getId(): string {
+  getId(): string | null {
     return this.id;
   }
-  setId(id: string): void {
+  setId(id: string | null): void {
     this.id = id;
   }
 
@@ -76,11 +79,11 @@ export default class AddressEntity {
     this.country = country;
   }
 
-  getZipcode(): string {
-    return this.zipcode;
+  getzipCode(): string {
+    return this.zipCode;
   }
-  setZipcode(zipcode: string): void {
-    this.zipcode = zipcode;
+  setzipCode(zipCode: string): void {
+    this.zipCode = zipCode;
   }
 
   getHouseNumber(): string {
@@ -90,6 +93,13 @@ export default class AddressEntity {
     this.houseNumber = houseNumber;
   }
 
+  getComplement(): string | null {
+    return this.complement;
+  }
+  setComplement(complement: string | null): void {
+    this.complement = complement;
+  }
+
   getUserId(): string {
     return this.userId;
   }
@@ -97,10 +107,10 @@ export default class AddressEntity {
     this.userId = userId;
   }
 
-  getCreatedAt(): Date {
+  getCreatedAt(): Date | null {
     return this.createdAt;
   }
-  setCreatedAt(createdAt: Date): void {
+  setCreatedAt(createdAt: Date | null): void {
     this.createdAt = createdAt;
   }
 }

@@ -20,6 +20,7 @@ export default async function dbInit() {
                 adr_country varchar(20) NOT NULL,
                 adr_zipcode varchar(20) NOT NULL,
                 adr_house_number varchar(10) NOT NULL,
+                adr_complement varchar(100),
                 adr_user_id UUID NOT NULL REFERENCES tb_users(usr_id) ON DELETE CASCADE,
                 adr_created_at timestamp NOT NULL DEFAULT NOW()
               );

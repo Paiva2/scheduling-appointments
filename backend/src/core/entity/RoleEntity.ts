@@ -1,19 +1,19 @@
 export default class RoleEntity {
-  private id: string;
+  private id: string | null;
   private name: string;
-  private createdAt: Date;
+  private createdAt: Date | null;
 
-  constructor(id: string, name: string, createdAt: Date) {
+  constructor(id: string | null, name: string, createdAt: Date | null) {
     this.id = id;
     this.name = name;
     this.createdAt = createdAt;
   }
 
-  getId(): string {
+  getId(): string | null {
     return this.id;
   }
 
-  setId(id: string): void {
+  setId(id: string | null): void {
     this.id = id;
   }
 
@@ -25,11 +25,11 @@ export default class RoleEntity {
     this.name = name;
   }
 
-  getCreatedAt(): Date {
+  getCreatedAt(): Date | null {
     return this.createdAt;
   }
 
-  setCreatedAt(date: Date) {
+  setCreatedAt(date: Date | null) {
     this.createdAt = date;
   }
 }

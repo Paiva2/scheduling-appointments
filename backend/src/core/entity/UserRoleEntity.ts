@@ -1,9 +1,9 @@
 export default class UserRoleEntity {
-  private userId;
-  private roleId;
-  private createdAt;
+  private userId: string;
+  private roleId: string;
+  private createdAt: Date | null;
 
-  constructor(userId: string, roleId: string, createdAt: Date) {
+  constructor(userId: string, roleId: string, createdAt: Date | null) {
     this.userId = userId;
     this.roleId = roleId;
     this.createdAt = createdAt;
@@ -25,11 +25,11 @@ export default class UserRoleEntity {
     this.roleId = id;
   }
 
-  getCreatedAt(): Date {
+  getCreatedAt(): Date | null {
     return this.createdAt;
   }
 
-  setCreatedAt(id: Date): void {
+  setCreatedAt(id: Date | null): void {
     this.createdAt = id;
   }
 }

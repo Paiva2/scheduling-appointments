@@ -1,11 +1,17 @@
 export default class UserEntity {
-  private id: string;
+  private id: string | null;
   private name: string;
   private email: string;
   private password: string;
-  private createdAt: Date;
+  private createdAt: Date | null;
 
-  constructor(id: string, name: string, email: string, password: string, createdAt: Date) {
+  constructor(
+    id: string | null,
+    name: string,
+    email: string,
+    password: string,
+    createdAt: Date | null
+  ) {
     this.id = id;
     this.name = name;
     this.email = email;
@@ -13,11 +19,11 @@ export default class UserEntity {
     this.createdAt = createdAt;
   }
 
-  getId(): string {
+  getId(): string | null {
     return this.id;
   }
 
-  setId(id: string): void {
+  setId(id: string | null): void {
     this.id = id;
   }
 
@@ -45,11 +51,11 @@ export default class UserEntity {
     this.password = password;
   }
 
-  getCreatedAt(): Date {
+  getCreatedAt(): Date | null {
     return this.createdAt;
   }
 
-  setCreatedAt(date: Date) {
+  setCreatedAt(date: Date | null) {
     this.createdAt = date;
   }
 }
