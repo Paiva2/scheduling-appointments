@@ -5,6 +5,7 @@ import { IUsecase } from "../../../core/interfaces/adapter/IUsecase";
 import { RoleRepository } from "../../../infra/persistence/repository/RoleRepository";
 import { UserRoleRepository } from "../../../infra/persistence/repository/UserRoleRepository";
 import { PasswordUtils } from "../../../infra/utils/passwordUtils";
+import { DatabaseUtils } from "../../../infra/utils/databaseUtils";
 
 export default class RegisterUserUsecaseFactory {
   constructor() {}
@@ -15,13 +16,15 @@ export default class RegisterUserUsecaseFactory {
     const passwordUtils = new PasswordUtils();
     const roleRepository = new RoleRepository();
     const userRoleRepository = new UserRoleRepository();
+    const databaseUtils = new DatabaseUtils();
 
     return new RegisterUserUsecase(
       userRepository,
       addressRepository,
       roleRepository,
       userRoleRepository,
-      passwordUtils
+      passwordUtils,
+      databaseUtils
     );
   }
 }

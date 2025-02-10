@@ -5,6 +5,7 @@ import { IRegisterUserInput, IRegisterUserInputAddress } from "./dto/IRegisterUs
 import { InvalidFieldException, RoleNotFoundException } from "../common/exception";
 import { AddressEntity, RoleEntity, UserEntity, UserRoleEntity } from "../../../entity";
 import { EnumRole } from "../../../enum";
+import { IDatabaseUtils } from "../../../interfaces/utils/IDatabaseUtils";
 import {
   IUserRepository,
   IAddressRepository,
@@ -21,7 +22,8 @@ export default class RegisterUserUsecase implements IUsecase {
     private readonly addressRepository: IAddressRepository,
     private readonly roleRepository: IRoleRepository,
     private readonly userRoleRepository: IUserRoleRepository,
-    private readonly passwordUtils: IPasswordUtils
+    private readonly passwordUtils: IPasswordUtils,
+    private readonly databaseUtils: IDatabaseUtils
   ) {}
 
   public async execute(input: IRegisterUserInput): Promise<void> {
@@ -32,15 +34,24 @@ export default class RegisterUserUsecase implements IUsecase {
 
     await this.hashPassword(input);
     let user = this.fillNewUser(input);
-    user = await this.saveUser(user);
 
-    const address = this.fillNewAddress(user, input.address);
-    await this.persistAddress(address);
+    try {
+      await this.databaseUtils.beginTransaction();
+      user = await this.saveUser(user);
 
-    const role = await this.findRole();
-    const userRole = this.fillUserRole(user, role);
+      const address = this.fillNewAddress(user, input.address);
+      await this.persistAddress(address);
 
-    await this.persistUserRole(userRole);
+      const role = await this.findRole();
+      const userRole = this.fillUserRole(user, role);
+
+      await this.persistUserRole(userRole);
+
+      await this.databaseUtils.commitTransaction();
+    } catch (e) {
+      await this.databaseUtils.rollBackTransaction();
+      throw e;
+    }
   }
 
   private async checkEmailAlreadyUsed(email: string): Promise<UserEntity | null> {
