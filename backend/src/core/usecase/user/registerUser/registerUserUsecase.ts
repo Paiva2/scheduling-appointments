@@ -2,7 +2,7 @@ import UserAlreadyExistsException from "./exception/userAlreadyExistsException";
 import { IUsecase } from "../../../interfaces/adapter/IUsecase";
 import { IPasswordUtils } from "../../../interfaces/utils/IPasswordUtils";
 import { IRegisterUserInput, IRegisterUserInputAddress } from "./dto/IRegisterUserInput";
-import { InvalidFieldException, RoleNotFoundException } from "../common/exception";
+import { InvalidFieldException, RoleNotFoundException } from "../../common/exception";
 import { AddressEntity, RoleEntity, UserEntity, UserRoleEntity } from "../../../entity";
 import { EnumRole } from "../../../enum";
 import { IDatabaseUtils } from "../../../interfaces/utils/IDatabaseUtils";

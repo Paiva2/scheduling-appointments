@@ -6,11 +6,12 @@ import { RoleRepository } from "../../../infra/persistence/repository/RoleReposi
 import { UserRoleRepository } from "../../../infra/persistence/repository/UserRoleRepository";
 import { PasswordUtils } from "../../../infra/utils/passwordUtils";
 import { DatabaseUtils } from "../../../infra/utils/databaseUtils";
+import { IRegisterUserInput } from "../../../core/usecase/user/registerUser/dto/IRegisterUserInput";
 
 export default class RegisterUserUsecaseFactory {
   constructor() {}
 
-  public static create(): IUsecase {
+  public static create(): IUsecase<IRegisterUserInput, void> {
     const userRepository = new UserRepositoryPg();
     const addressRepository = new AddressRepositoryPg();
     const passwordUtils = new PasswordUtils();
