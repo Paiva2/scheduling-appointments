@@ -9,7 +9,7 @@ export default class RoleEntity {
     this.createdAt = createdAt;
   }
 
-  getId(): string | null {
+  public getId(): string | null {
     return this.id;
   }
 
@@ -17,7 +17,7 @@ export default class RoleEntity {
     this.id = id;
   }
 
-  getName(): string {
+  public getName(): string {
     return this.name;
   }
 
@@ -25,7 +25,7 @@ export default class RoleEntity {
     this.name = name;
   }
 
-  getCreatedAt(): Date | null {
+  public getCreatedAt(): Date | null {
     return this.createdAt;
   }
 

@@ -1,35 +1,53 @@
+import RoleEntity from "./RoleEntity";
+
 export default class UserRoleEntity {
   private userId: string;
   private roleId: string;
   private createdAt: Date | null;
 
-  constructor(userId: string, roleId: string, createdAt: Date | null) {
+  private roleEntity: RoleEntity | null;
+
+  constructor(
+    userId: string,
+    roleId: string,
+    createdAt: Date | null,
+    roleEntity: RoleEntity | null
+  ) {
     this.userId = userId;
     this.roleId = roleId;
     this.createdAt = createdAt;
+    this.roleEntity = roleEntity;
   }
 
-  getUserId(): string {
+  public getUserId(): string {
     return this.userId;
   }
 
-  setUserId(id: string): void {
+  public setUserId(id: string): void {
     this.userId = id;
   }
 
-  getRoleId(): string {
+  public getRoleId(): string {
     return this.roleId;
   }
 
-  setRoleId(id: string): void {
+  public setRoleId(id: string): void {
     this.roleId = id;
   }
 
-  getCreatedAt(): Date | null {
+  public getCreatedAt(): Date | null {
     return this.createdAt;
   }
 
-  setCreatedAt(id: Date | null): void {
+  public setCreatedAt(id: Date | null): void {
     this.createdAt = id;
+  }
+
+  public getRoleEntity(): RoleEntity | null {
+    return this.roleEntity;
+  }
+
+  public setRoleEntity(roleEntity: RoleEntity | null) {
+    this.roleEntity = roleEntity;
   }
 }

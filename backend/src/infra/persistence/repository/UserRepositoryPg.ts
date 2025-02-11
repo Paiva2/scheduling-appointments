@@ -7,10 +7,22 @@ export default class UserRepositoryPg implements IUserRepository {
   public async findUserByEmail(email: string): Promise<UserEntity | null> {
     const { rows } = await pool.query(
       `
-          SELECT * FROM tb_users
-          WHERE usr_email = $1
-        `,
+        SELECT * FROM tb_users
+        WHERE usr_email = $1
+      `,
       [email]
+    );
+
+    return UserMapper.toDomain(rows[0]);
+  }
+
+  public async findById(id: string): Promise<UserEntity | null> {
+    const { rows } = await pool.query(
+      `
+        SELECT * FROM tb_users
+        WHERE usr_id = $1
+      `,
+      [id]
     );
 
     return UserMapper.toDomain(rows[0]);

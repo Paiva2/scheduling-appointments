@@ -13,7 +13,7 @@ import {
   IUserRoleRepository,
 } from "../../../interfaces/repository/index";
 
-export default class RegisterUserUsecase implements IUsecase {
+export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput, void> {
   private EMAIL_REGEX =
     /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i;
 

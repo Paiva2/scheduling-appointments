@@ -19,43 +19,43 @@ export default class UserEntity {
     this.createdAt = createdAt;
   }
 
-  getId(): string | null {
+  public getId(): string | null {
     return this.id;
   }
 
-  setId(id: string | null): void {
+  public setId(id: string | null): void {
     this.id = id;
   }
 
-  getName(): string {
+  public getName(): string {
     return this.name;
   }
 
-  setName(name: string): void {
+  public setName(name: string): void {
     this.name = name;
   }
 
-  getEmail(): string {
+  public getEmail(): string {
     return this.email;
   }
 
-  setEmail(email: string): void {
+  public setEmail(email: string): void {
     this.email = email;
   }
 
-  getPassword(): string {
+  public getPassword(): string {
     return this.password;
   }
 
-  setPassword(password: string): void {
+  public setPassword(password: string): void {
     this.password = password;
   }
 
-  getCreatedAt(): Date | null {
+  public getCreatedAt(): Date | null {
     return this.createdAt;
   }
 
-  setCreatedAt(date: Date | null) {
+  public setCreatedAt(date: Date | null) {
     this.createdAt = date;
   }
 }

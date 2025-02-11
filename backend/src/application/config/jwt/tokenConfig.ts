@@ -21,6 +21,7 @@ export default class TokenConfig implements ITokenConfig {
           expiresIn: this.EXP_TIME_STRING,
           issuer: this.ISSUER,
           algorithm: "HS256",
+          subject: payload.id,
         }
       );
     } catch (e) {
@@ -30,13 +31,16 @@ export default class TokenConfig implements ITokenConfig {
   }
 
   public verify(token: string): unknown {
-    try {
-      const decoded = jwt.verify(token, this.SECRET);
+    if (!token) {
+      throw new ForbiddenException("Invalid token!");
+    }
 
-      return null;
+    try {
+      const decoded = jwt.verify(token.replace("Bearer ", ""), this.SECRET);
+      return decoded;
     } catch (e) {
       console.error(e);
-      throw new ForbiddenException("Invalid token!");
+      throw new ForbiddenException("Error while verifying token...");
     }
   }
 }

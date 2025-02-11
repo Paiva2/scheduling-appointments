@@ -19,7 +19,7 @@ export default class AddressRepositoryPg implements IAddressRepository {
         )
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         RETURNING *
-    `,
+      `,
       [
         address.getStreet(),
         address.getNeighbourhood(),
@@ -31,6 +31,12 @@ export default class AddressRepositoryPg implements IAddressRepository {
         address.getUserId(),
       ]
     );
+
+    return AddressMapper.toDomain(rows[0])!;
+  }
+
+  public async findByUser(userId: string): Promise<AddressEntity | null> {
+    const { rows } = await pool.query(`SELECT * FROM tb_address WHERE adr_user_id = $1`, [userId]);
 
     return AddressMapper.toDomain(rows[0])!;
   }

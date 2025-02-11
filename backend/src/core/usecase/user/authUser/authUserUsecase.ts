@@ -32,7 +32,7 @@ export default class AuthUserUsecase implements IUsecase<IAuthUserInput, IAuthUs
   }
 
   private async checkPassword(hashedPassword: string, rawPassword: string) {
-    const isPasswordValid = this.passwordUtils.verify(hashedPassword, rawPassword);
+    const isPasswordValid = await this.passwordUtils.verify(hashedPassword, rawPassword);
 
     if (!isPasswordValid) {
       throw new WrongCredentialsException();

@@ -37,80 +37,80 @@ export default class AddressEntity {
     this.createdAt = createdAt;
   }
 
-  getId(): string | null {
+  public getId(): string | null {
     return this.id;
   }
-  setId(id: string | null): void {
+  public setId(id: string | null): void {
     this.id = id;
   }
 
-  getStreet(): string {
+  public getStreet(): string {
     return this.street;
   }
-  setStreet(street: string): void {
+  public setStreet(street: string): void {
     this.street = street;
   }
 
-  getNeighbourhood(): string {
+  public getNeighbourhood(): string {
     return this.neighbourhood;
   }
-  setNeighbourhood(neighbourhood: string): void {
+  public setNeighbourhood(neighbourhood: string): void {
     this.neighbourhood = neighbourhood;
   }
 
-  getState(): string {
+  public getState(): string {
     return this.state;
   }
-  setState(state: string): void {
+  public setState(state: string): void {
     this.state = state;
   }
 
-  getCity(): string {
+  public getCity(): string {
     return this.city;
   }
-  setCity(city: string): void {
+  public setCity(city: string): void {
     this.city = city;
   }
 
-  getCountry(): string {
+  public getCountry(): string {
     return this.country;
   }
-  setCountry(country: string): void {
+  public setCountry(country: string): void {
     this.country = country;
   }
 
-  getzipCode(): string {
+  public getzipCode(): string {
     return this.zipCode;
   }
-  setzipCode(zipCode: string): void {
+  public setzipCode(zipCode: string): void {
     this.zipCode = zipCode;
   }
 
-  getHouseNumber(): string {
+  public getHouseNumber(): string {
     return this.houseNumber;
   }
-  setHouseNumber(houseNumber: string): void {
+  public setHouseNumber(houseNumber: string): void {
     this.houseNumber = houseNumber;
   }
 
-  getComplement(): string | null {
+  public getComplement(): string | null {
     return this.complement;
   }
-  setComplement(complement: string | null): void {
+  public setComplement(complement: string | null): void {
     this.complement = complement;
   }
 
-  getUserId(): string {
+  public getUserId(): string {
     return this.userId;
   }
-  setUserId(userId: string): void {
+  public setUserId(userId: string): void {
     this.userId = userId;
   }
 
-  getCreatedAt(): Date | null {
+  public getCreatedAt(): Date | null {
     return this.createdAt;
   }
-  setCreatedAt(createdAt: Date | null): void {
+  public setCreatedAt(createdAt: Date | null): void {
     this.createdAt = createdAt;
   }
 }
