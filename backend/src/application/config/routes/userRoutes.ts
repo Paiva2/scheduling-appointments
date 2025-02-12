@@ -6,6 +6,7 @@ import { registerUserInput } from "../../../core/usecase/user/registerUser/dto/I
 import { authUserInput } from "../../../core/usecase/user/authUser/dto/authUserInput";
 import authValidator from "../../middleware/authValidator";
 import { EnumRole } from "../../../core/enum";
+import { forgotPasswordInput } from "../../../core/usecase/user/forgotPassword/dto/forgotPasswordInput";
 
 export default function userRoutes(app: Express) {
   const userController = new UserController();
@@ -26,5 +27,12 @@ export default function userRoutes(app: Express) {
     `${apiVersionPrefix}/user/profile`,
     [authValidator([EnumRole.USER.toString()])],
     (req: Request, res: Response, next: NextFunction) => userController.getProfile(req, res, next)
+  );
+
+  app.post(
+    `${apiVersionPrefix}/user/forgot-password`,
+    [inputHandler(forgotPasswordInput)],
+    (req: Request, res: Response, next: NextFunction) =>
+      userController.forgotPassword(req, res, next)
   );
 }

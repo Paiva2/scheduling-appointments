@@ -4,17 +4,20 @@ import { IAuthUserOutput } from "../../../../core/usecase/user/authUser/dto/auth
 import { IAuthUserInput } from "../../../../core/usecase/user/authUser/dto/authUserInput";
 import { IRegisterUserInput } from "../../../../core/usecase/user/registerUser/dto/IRegisterUserInput";
 import { ITokenConfig } from "../../../../core/interfaces/adapter/ITokenConfig";
-import AuthUserFactory from "../../../factory/user/authUserFactory";
-import RegisterUserUsecaseFactory from "../../../factory/user/registerUserUsecaseFactory";
-import TokenConfig from "../../../config/jwt/tokenConfig";
 import { IGetProfileInput } from "../../../../core/usecase/user/getProfile/dto/getProfileInput";
 import { IGetProfileOutput } from "../../../../core/usecase/user/getProfile/dto/getProfileOutput";
+import { IForgotPasswordInput } from "../../../../core/usecase/user/forgotPassword/dto/forgotPasswordInput";
+import TokenConfig from "../../../config/jwt/tokenConfig";
+import RegisterUserUsecaseFactory from "../../../factory/user/registerUserUsecaseFactory";
+import AuthUserFactory from "../../../factory/user/authUserFactory";
 import GetProfileFactory from "../../../factory/user/getProfileFactory";
+import ForgotPasswordFactory from "../../../factory/user/forgotPasswordFactory";
 
 export default class UserController {
   private readonly registerUserUsecase: IUsecase<IRegisterUserInput, void>;
   private readonly authUserUsecase: IUsecase<IAuthUserInput, IAuthUserOutput>;
   private readonly getProfileUsecase: IUsecase<IGetProfileInput, IGetProfileOutput>;
+  private readonly forgotPasswordUsecase: IUsecase<IForgotPasswordInput, void>;
 
   private readonly tokenConfig: ITokenConfig;
 
@@ -22,6 +25,7 @@ export default class UserController {
     this.registerUserUsecase = RegisterUserUsecaseFactory.create();
     this.authUserUsecase = AuthUserFactory.create();
     this.getProfileUsecase = GetProfileFactory.create();
+    this.forgotPasswordUsecase = ForgotPasswordFactory.create();
 
     this.tokenConfig = new TokenConfig();
   }
@@ -53,5 +57,11 @@ export default class UserController {
     });
 
     return res.status(200).send(output);
+  }
+
+  public async forgotPassword(req: Request, res: Response, _next: NextFunction) {
+    await this.forgotPasswordUsecase.execute({ email: req.body.email });
+
+    return res.status(200).send();
   }
 }

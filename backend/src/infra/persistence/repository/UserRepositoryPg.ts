@@ -33,6 +33,8 @@ export default class UserRepositoryPg implements IUserRepository {
       `
         INSERT INTO tb_users (usr_name, usr_email, usr_password)
         VALUES ($1, $2, $3)
+        ON CONFLICT (usr_email) DO UPDATE
+        SET usr_name = $1, usr_email = $2, usr_password = $3
         RETURNING *
       `,
       [user.getName(), user.getEmail(), user.getPassword()]

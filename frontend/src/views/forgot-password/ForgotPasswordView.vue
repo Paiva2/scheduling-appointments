@@ -101,6 +101,7 @@ export default {
           email: this.formFields.email,
         });
 
+        this.formFields.email = "";
         this.openDialog();
       } catch {
         this.toast.error("Error while trying to recover password...");

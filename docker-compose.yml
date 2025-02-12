@@ -10,3 +10,9 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=impacta_project_db
+  redis:
+    container_name: "impacta-project-redis"
+    image: "redis:6.2.0-alpine"
+    command: redis-server --requirepass development
+    ports:
+      - "6379:6379"
