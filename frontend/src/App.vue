@@ -6,8 +6,24 @@
   </v-app>
 </template>
 
-<script setup lang="ts">
+<script>
 import { RouterView } from "vue-router";
+import { mapState } from "vuex";
+import { actionTypes } from "@/lib/store/types/actionTypes";
+
+export default {
+  name: "App",
+  computed: {
+    ...mapState(["authToken"]),
+  },
+  watch: {
+    async authToken(val) {
+      if (!!val && !this.getAuthToken) {
+        await this.$store.dispatch(actionTypes.USER.PROFILE);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped></style>

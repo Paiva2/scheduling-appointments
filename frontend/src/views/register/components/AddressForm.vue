@@ -208,11 +208,6 @@ export default {
   font-size: 0.8125rem;
 }
 
-.login-btn {
-  width: 7.5rem;
-  align-self: end;
-}
-
 .inner-btn-icon {
   position: absolute !important;
   top: 12px;

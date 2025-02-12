@@ -1,11 +1,18 @@
 <template>
   <div>
-    <h1>Hello World</h1>
+    <h1>Hello {{ user.name }}</h1>
   </div>
 </template>
 
 <script>
-export default {};
+import { mapState } from "vuex";
+
+export default {
+  name: "Home",
+  computed: {
+    ...mapState(["user"]),
+  },
+};
 </script>
 
 <style lang="stylus" scoped></style>

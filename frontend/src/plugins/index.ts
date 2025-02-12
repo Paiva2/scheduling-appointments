@@ -2,6 +2,7 @@ import "vue-toastification/dist/index.css";
 import vuetify from "./vuetify";
 import Toast from "vue-toastification";
 import type { App } from "vue";
+import { store } from "@/lib/store/store";
 
 const toastOptions = {
   draggable: true,
@@ -12,5 +13,5 @@ const toastOptions = {
 };
 
 export function registerPlugins(app: App) {
-  app.use(vuetify).use(Toast, toastOptions);
+  app.use(vuetify).use(Toast, toastOptions).use(store);
 }

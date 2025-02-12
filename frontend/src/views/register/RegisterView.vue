@@ -10,7 +10,7 @@
       next-text="Next"
       v-model="stepperValue"
     >
-      <template v-slot:item.1>
+      <template v-slot:[`item.1`]>
         <v-form @submit.prevent="handleRegister" ref="form" class="d-flex form-wrapper px-3 py-6">
           <div class="form-title d-flex">
             <h2 class="d-flex">
@@ -93,7 +93,7 @@
         </v-form>
       </template>
 
-      <template v-slot:item.2>
+      <template v-slot:[`item.2`]>
         <address-form :formFields="formFields" :handleRegister="handleRegister" />
       </template>
 
@@ -115,6 +115,7 @@
 import api from "@/plugins/axios";
 import { useToast } from "vue-toastification";
 import AddressForm from "./components/AddressForm";
+import { actionTypes } from "@/lib/store/types/actionTypes";
 
 export default {
   name: "RegisterView",
@@ -200,7 +201,7 @@ export default {
       this.loadingRegister = true;
 
       try {
-        await api.post("/user/register", {
+        await this.$store.dispatch(actionTypes.USER.REGISTER, {
           email: this.formFields.email,
           password: this.formFields.password,
           name: this.formFields.name,

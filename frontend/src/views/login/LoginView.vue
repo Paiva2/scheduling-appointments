@@ -43,10 +43,17 @@
         </v-text-field>
       </v-container>
 
-      <p class="link">
-        Don't have an account?
-        <router-link :to="{ name: 'register' }"> Register here! </router-link>
-      </p>
+      <div class="d-flex links">
+        <p class="link">
+          Don't have an account?
+          <router-link :to="{ name: 'register' }"> Register here! </router-link>
+        </p>
+
+        <p class="link">
+          Forgot password?
+          <router-link :to="{ name: 'forgot-password' }"> Recover! </router-link>
+        </p>
+      </div>
 
       <v-btn
         type="submit"
@@ -63,10 +70,11 @@
 </template>
 
 <script>
-import api from "@/plugins/axios";
+import { AxiosError } from "axios";
+import { actionTypes } from "@/lib/store/types/actionTypes";
 import { useToast } from "vue-toastification";
 import Cookies from "js-cookie";
-import { mapState } from "vuex";
+import { jwtDecode } from "jwt-decode";
 
 export default {
   name: "LoginView",
@@ -104,7 +112,6 @@ export default {
     };
   },
   computed: {
-    ...mapState(["auth"]),
     iconPassword() {
       return this.showPassword ? "mdi-eye-outline" : "mdi-eye-off-outline";
     },
@@ -119,12 +126,12 @@ export default {
       this.toast.clear();
 
       try {
-        const loginResponse = await api.post("/user/login", {
+        const loginResponse = await this.$store.dispatch(actionTypes.USER.LOGIN, {
           email: this.formFields.email,
           password: this.formFields.password,
         });
 
-        const authToken = loginResponse.data.token;
+        const authToken = loginResponse.token;
 
         this.setAuthCookie(authToken);
         this.$router.push({ name: "home" });
@@ -150,7 +157,12 @@ export default {
       this.showPassword = !this.showPassword;
     },
     setAuthCookie(authToken) {
-      Cookies.set("scheduling-appointments-app", authToken, { path: "/", expires: 15 });
+      const exp = jwtDecode(authToken).exp * 1000;
+
+      Cookies.set("scheduling-appointments-app", authToken, {
+        path: "/",
+        expires: new Date(exp),
+      });
     },
   },
 };
@@ -174,6 +186,11 @@ export default {
 .fields-wrapper {
   flex-direction: column;
   gap: 1.125rem;
+}
+
+.links {
+  flex-direction: column;
+  gap: 5px;
 }
 
 .link {
