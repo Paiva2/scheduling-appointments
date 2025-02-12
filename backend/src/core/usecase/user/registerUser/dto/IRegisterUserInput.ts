@@ -30,6 +30,6 @@ export const registerUserInput = z.object({
     state: z.string().nonempty(),
     country: z.string().nonempty(),
     zipCode: z.string().nonempty(),
-    complement: z.string().nonempty(),
+    complement: z.string(),
   }),
 });

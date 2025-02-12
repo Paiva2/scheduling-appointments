@@ -119,7 +119,7 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
   }
 
   private fillUserRole(user: UserEntity, role: RoleEntity): UserRoleEntity {
-    return new UserRoleEntity(user.getId()!, role.getId()!, null);
+    return new UserRoleEntity(user.getId()!, role.getId()!, null, null);
   }
 
   private async persistUserRole(userRole: UserRoleEntity): Promise<void> {
