@@ -1,9 +1,11 @@
 import z from "zod";
+import { EnumRole } from "../../../../enum";
 
 export interface IRegisterUserInput {
   email: string;
   name: string;
   password: string;
+  role: EnumRole;
   address: IRegisterUserInputAddress;
 }
 
@@ -22,6 +24,7 @@ export const registerUserInput = z.object({
   email: z.string().nonempty(),
   name: z.string().nonempty(),
   password: z.string().nonempty(),
+  role: z.enum(["USER", "DOCTOR"]),
   address: z.object({
     street: z.string().nonempty(),
     neighbourhood: z.string().nonempty(),
@@ -30,6 +33,6 @@ export const registerUserInput = z.object({
     state: z.string().nonempty(),
     country: z.string().nonempty(),
     zipCode: z.string().nonempty(),
-    complement: z.string(),
+    complement: z.string().nullable(),
   }),
 });

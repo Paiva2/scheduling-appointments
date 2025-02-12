@@ -42,7 +42,7 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
       const address = this.fillNewAddress(user, input.address);
       await this.persistAddress(address);
 
-      const role = await this.findRole();
+      const role = await this.findRole(input.role);
       const userRole = this.fillUserRole(user, role);
 
       await this.persistUserRole(userRole);
@@ -108,14 +108,14 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
     await this.addressRepository.persist(address);
   }
 
-  private async findRole(): Promise<RoleEntity> {
-    const role = await this.roleRepository.findRoleByName(EnumRole.USER.toString());
+  private async findRole(role: EnumRole): Promise<RoleEntity> {
+    const roleFound = await this.roleRepository.findRoleByName(role.toUpperCase());
 
-    if (role == null) {
-      throw new RoleNotFoundException(`Role not found: ${EnumRole.USER.toString()}!`);
+    if (roleFound == null) {
+      throw new RoleNotFoundException(`Role not found: ${role.toUpperCase()}!`);
     }
 
-    return role;
+    return roleFound;
   }
 
   private fillUserRole(user: UserEntity, role: RoleEntity): UserRoleEntity {

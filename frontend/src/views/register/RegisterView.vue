@@ -5,7 +5,6 @@
       class="stepper elevation-2"
       flat
       tile
-      editable
       show-actions
       next-text="Next"
       v-model="stepperValue"
@@ -84,6 +83,14 @@
                 />
               </template>
             </v-text-field>
+
+            <v-select
+              label="Select your role"
+              v-model="formFields.role"
+              color="blue-darken-3"
+              :items="roles"
+              variant="underlined"
+            />
           </v-container>
 
           <p class="link">
@@ -112,7 +119,6 @@
 </template>
 
 <script>
-import api from "@/plugins/axios";
 import { useToast } from "vue-toastification";
 import AddressForm from "./components/AddressForm";
 import { actionTypes } from "@/lib/store/types/actionTypes";
@@ -132,11 +138,13 @@ export default {
       showPassword: false,
       showConfirmPassword: false,
       loadingRegister: false,
+      roles: ["Pacient", "Doctor"],
       formFields: {
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
+        role: "User",
         address: {
           street: "",
           neighbourhood: "",
@@ -205,6 +213,7 @@ export default {
           email: this.formFields.email,
           password: this.formFields.password,
           name: this.formFields.name,
+          role: this.formFields.role.toUpperCase(),
           address: {
             street: this.formFields.address.street,
             neighbourhood: this.formFields.address.neighbourhood,
