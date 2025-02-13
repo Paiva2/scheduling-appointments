@@ -1,16 +1,29 @@
 import UserAlreadyExistsException from "./exception/userAlreadyExistsException";
 import { IUsecase } from "../../../interfaces/adapter/IUsecase";
+import { IDatabaseUtils } from "../../../interfaces/utils/IDatabaseUtils";
 import { IPasswordUtils } from "../../../interfaces/utils/IPasswordUtils";
 import { IRegisterUserInput, IRegisterUserInputAddress } from "./dto/IRegisterUserInput";
-import { InvalidFieldException, RoleNotFoundException } from "../../common/exception";
-import { AddressEntity, RoleEntity, UserEntity, UserRoleEntity } from "../../../entity";
 import { EnumRole } from "../../../enum";
-import { IDatabaseUtils } from "../../../interfaces/utils/IDatabaseUtils";
+import {
+  AddressEntity,
+  RoleEntity,
+  UserEntity,
+  UserRoleEntity,
+  SpecialismEntity,
+  UserSpecialismEntity,
+} from "../../../entity";
+import {
+  InvalidFieldException,
+  RoleNotFoundException,
+  SpecialismNotFoundException,
+} from "../../common/exception";
 import {
   IUserRepository,
   IAddressRepository,
   IRoleRepository,
   IUserRoleRepository,
+  ISpecialismRepository,
+  IUserSpecialismRepository,
 } from "../../../interfaces/repository/index";
 
 export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput, void> {
@@ -22,6 +35,8 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
     private readonly addressRepository: IAddressRepository,
     private readonly roleRepository: IRoleRepository,
     private readonly userRoleRepository: IUserRoleRepository,
+    private readonly specialismRepository: ISpecialismRepository,
+    private readonly userSpecialismRepository: IUserSpecialismRepository,
     private readonly passwordUtils: IPasswordUtils,
     private readonly databaseUtils: IDatabaseUtils
   ) {}
@@ -46,6 +61,12 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
       const userRole = this.fillUserRole(user, role);
 
       await this.persistUserRole(userRole);
+
+      if (input.role === "DOCTOR" && input.specialism !== null) {
+        const specialism = await this.findSpecialism(input.specialism);
+        const fillUserSpecialism = this.fillUserSpecialism(user, specialism);
+        await this.saveUserSpecialism(fillUserSpecialism);
+      }
 
       await this.databaseUtils.commitTransaction();
     } catch (e) {
@@ -124,5 +145,25 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
 
   private async persistUserRole(userRole: UserRoleEntity): Promise<void> {
     await this.userRoleRepository.persist(userRole);
+  }
+
+  private async findSpecialism(specialismName: string): Promise<SpecialismEntity> {
+    const specialism = await this.specialismRepository.findSpecialismByName(
+      specialismName.toUpperCase()
+    );
+
+    if (specialism == null) {
+      throw new SpecialismNotFoundException();
+    }
+
+    return specialism;
+  }
+
+  private fillUserSpecialism(user: UserEntity, specialism: SpecialismEntity): UserSpecialismEntity {
+    return new UserSpecialismEntity(user.getId(), specialism.getId(), null, null);
+  }
+
+  private async saveUserSpecialism(userSpecialism: UserSpecialismEntity): Promise<void> {
+    await this.userSpecialismRepository.persist(userSpecialism);
   }
 }

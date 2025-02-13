@@ -1,7 +1,7 @@
 <template>
   <v-container class="d-flex main-wrapper align-center justify-center">
     <v-stepper
-      :items="['Personal info', 'Address']"
+      :items="labels"
       class="stepper elevation-2"
       flat
       tile
@@ -10,7 +10,7 @@
       v-model="stepperValue"
     >
       <template v-slot:[`item.1`]>
-        <v-form @submit.prevent="handleRegister" ref="form" class="d-flex form-wrapper px-3 py-6">
+        <v-form ref="form" class="d-flex form-wrapper">
           <div class="form-title d-flex">
             <h2 class="d-flex">
               <v-icon color="blue-darken-3" size="22">mdi-calendar-arrow-right</v-icon>
@@ -21,7 +21,7 @@
 
           <v-container class="fields-wrapper d-flex pa-0">
             <v-text-field
-              hide-details="auto"
+              hide-details
               label="Name"
               placeholder="John Doe"
               type="text"
@@ -33,7 +33,7 @@
             />
 
             <v-text-field
-              hide-details="auto"
+              hide-details
               label="E-mail address"
               placeholder="youremail@email.com"
               type="email"
@@ -45,7 +45,7 @@
             />
 
             <v-text-field
-              hide-details="auto"
+              hide-details
               label="Password"
               :type="showPassword ? 'text' : 'password'"
               variant="underlined"
@@ -65,14 +65,14 @@
             </v-text-field>
 
             <v-text-field
-              hide-details="auto"
-              label="Confirm Password"
               :type="showConfirmPassword ? 'text' : 'password'"
+              :rules="confirmPasswordRules"
+              label="Confirm Password"
               variant="underlined"
               color="blue-darken-3"
-              :rules="confirmPasswordRules"
               v-model="formFields.confirmPassword"
               validate-on="submit"
+              hide-details
             >
               <template v-slot:append-inner>
                 <v-btn
@@ -88,20 +88,44 @@
               label="Select your role"
               v-model="formFields.role"
               color="blue-darken-3"
-              :items="roles"
               variant="underlined"
+              :items="roles"
+              hide-details
+            />
+
+            <v-select
+              :items="specialisms"
+              :rules="specialismRule"
+              v-show="formFields.role === 'Doctor'"
+              label="Select your specialism"
+              v-model="formFields.specialism"
+              color="blue-darken-3"
+              id="specialism"
+              name="specialism"
+              variant="underlined"
+              hide-details
             />
           </v-container>
 
           <p class="link">
             Already have an account?
-            <router-link :to="{ name: 'login' }"> Sign up! </router-link>
+            <router-link :to="{ name: 'login' }">Sign up!</router-link>
           </p>
         </v-form>
       </template>
 
       <template v-slot:[`item.2`]>
-        <address-form :formFields="formFields" :handleRegister="handleRegister" />
+        <address-form
+          ref="address-form-ref"
+          :formFields="formFields"
+          :streetRules="streetRules"
+          :neighbourhoodRules="neighbourhoodRules"
+          :zipCodeRules="zipCodeRules"
+          :numberRules="numberRules"
+          :cityRules="cityRules"
+          :stateRules="stateRules"
+          :countryRules="countryRules"
+        />
       </template>
 
       <template v-slot:actions>
@@ -120,8 +144,8 @@
 
 <script>
 import { useToast } from "vue-toastification";
-import AddressForm from "./components/AddressForm";
 import { actionTypes } from "@/lib/store/types/actionTypes";
+import AddressForm from "./components/AddressForm";
 
 export default {
   name: "RegisterView",
@@ -132,19 +156,34 @@ export default {
     const toast = useToast();
     return { toast };
   },
+  watch: {
+    "formFields.role"() {
+      this.specialism = null;
+      this.$refs.form.errors = this.$refs.form.errors.filter((err) => err.id !== "specialism");
+      this.$refs.form.items.forEach((input) => {
+        if (input.id === "specialism") {
+          input.resetValidation();
+        }
+      });
+    },
+  },
   data() {
     return {
       stepperValue: 1,
       showPassword: false,
       showConfirmPassword: false,
       loadingRegister: false,
+      labels: ["Personal info", "Address"],
       roles: ["Pacient", "Doctor"],
+      specialisms: ["Cardiology", "Neurology", "Dermatology", "Pediatrics", "Orthopedics"],
+      specialism: null,
       formFields: {
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        role: "User",
+        role: "Pacient",
+        specialism: "",
         address: {
           street: "",
           neighbourhood: "",
@@ -164,27 +203,75 @@ export default {
             )
           )
             return true;
-          return "Invalid e-mail.";
+          return false;
         },
       ],
       passwordRules: [
         (value) => {
           if (value.length > 5) return true;
-          return "Password must have at least 6 characters.";
+          return false;
+        },
+      ],
+      specialismRule: [
+        (value) => {
+          if (this.formFields.role === "Pacient") return true;
+          if (!!value) return true;
+          return false;
         },
       ],
       confirmPasswordRules: [
         (value) => {
           if (value === "") return "Password confirmation can't be empty";
           if (value === this.formFields.password) return true;
-          return "Password confirmation must match password.";
+          return false;
         },
       ],
       nameRules: [
         (value) => {
           if (value?.length > 3) return true;
-
-          return "Name must have at least 3 characters.";
+          return false;
+        },
+      ],
+      streetRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      neighbourhoodRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      zipCodeRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      numberRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      cityRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      stateRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
+        },
+      ],
+      countryRules: [
+        (value) => {
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
     };
@@ -202,10 +289,6 @@ export default {
   },
   methods: {
     async handleRegister() {
-      const { valid } = await this.$refs.form.validate();
-
-      if (!valid) return;
-
       this.loadingRegister = true;
 
       try {
@@ -214,6 +297,7 @@ export default {
           password: this.formFields.password,
           name: this.formFields.name,
           role: this.formFields.role.toUpperCase(),
+          specialism: this.formFields.specialism.toUpperCase(),
           address: {
             street: this.formFields.address.street,
             neighbourhood: this.formFields.address.neighbourhood,
@@ -241,10 +325,12 @@ export default {
     },
     resetForm() {
       this.formFields = {
+        name: "",
         email: "",
         password: "",
         confirmPassword: "",
-        name: "",
+        role: "Pacient",
+        specialism: null,
         address: {
           street: "",
           neighbourhood: "",
@@ -268,11 +354,14 @@ export default {
     },
     async next() {
       if (this.stepperValue > 1) {
+        const formAddress = await this.$refs["address-form-ref"].$refs.form2.validate();
+        if (!formAddress.valid) return;
+
         await this.handleRegister();
       } else {
-        const { valid } = await this.$refs.form.validate();
+        const formInfos = await this.$refs.form.validate();
+        if (!formInfos.valid) return;
 
-        if (!valid) return;
         this.stepperValue++;
       }
     },

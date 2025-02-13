@@ -1,5 +1,5 @@
 <template>
-  <v-form @submit.prevent="handleRegister" ref="form" class="d-flex form-wrapper px-3 py-6">
+  <v-form ref="form2" class="d-flex form-wrapper px-3 py-6">
     <div class="form-title d-flex">
       <h2 class="d-flex">
         <v-icon color="blue-darken-3" size="22">mdi-calendar-arrow-right</v-icon>
@@ -9,7 +9,7 @@
 
     <v-container class="fields-wrapper d-flex pa-0">
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Street"
         type="text"
         variant="underlined"
@@ -20,7 +20,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Neighbourhood"
         type="text"
         variant="underlined"
@@ -31,7 +31,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Number"
         type="text"
         variant="underlined"
@@ -42,7 +42,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Zip code"
         type="text"
         variant="underlined"
@@ -53,7 +53,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="City"
         type="text"
         variant="underlined"
@@ -64,7 +64,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="State"
         type="text"
         variant="underlined"
@@ -75,7 +75,7 @@
       />
 
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Country"
         type="text"
         variant="underlined"
@@ -85,7 +85,7 @@
         validate-on="submit"
       />
       <v-text-field
-        hide-details="auto"
+        hide-details
         label="Complement"
         type="text"
         variant="underlined"
@@ -105,53 +105,49 @@ export default {
       type: Object,
       required: true,
     },
-    handleRegister: {
-      type: Function,
-      required: true,
-    },
   },
   data() {
     return {
       streetRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "Street can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       neighbourhoodRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "Neighbourhood can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       zipCodeRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "Zip code can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       numberRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "Number can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       cityRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "City can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       stateRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "State can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
       countryRules: [
         (value) => {
-          if (value?.length > 1) return true;
-          return "Country can't be null";
+          if (value?.length >= 1) return true;
+          return false;
         },
       ],
     };
@@ -160,11 +156,6 @@ export default {
 </script>
 
 <style scoped>
-.main-wrapper {
-  flex-direction: column;
-  min-height: 100vh;
-}
-
 .form-wrapper {
   background-color: #fff;
   width: 100%;
@@ -179,21 +170,6 @@ export default {
   gap: 1.125rem;
 }
 
-.link {
-  color: #263238;
-  font-size: 0.875rem;
-}
-
-.link a {
-  color: #1565c0;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.link a:hover {
-  text-decoration: underline;
-}
-
 .form-title {
   flex-direction: column;
   color: #263238;
@@ -206,15 +182,5 @@ export default {
 
 .form-title p {
   font-size: 0.8125rem;
-}
-
-.inner-btn-icon {
-  position: absolute !important;
-  top: 12px;
-  right: 0px;
-  color: #263238;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>
