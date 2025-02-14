@@ -1,6 +1,6 @@
 import { AddressEntity, UserEntity } from "../../../entity";
 import { IUsecase } from "../../../interfaces/adapter/IUsecase";
-import { IAddressRepository, IUserRepository } from "../../../interfaces/repository";
+import { IAddressRepository, IUserRepository, IUserSpecialismRepository } from "../../../interfaces/repository";
 import { AddressNotFoundException, UserNotFoundException } from "../../common/exception";
 import { IGetProfileInput } from "./dto/getProfileInput";
 import { IGetProfileOutput } from "./dto/getProfileOutput";
@@ -8,7 +8,8 @@ import { IGetProfileOutput } from "./dto/getProfileOutput";
 export default class GetProfileUsecase implements IUsecase<IGetProfileInput, IGetProfileOutput> {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly addressRepository: IAddressRepository
+    private readonly addressRepository: IAddressRepository,
+    private readonly userSpecialismRepository: IUserSpecialismRepository
   ) {}
 
   public async execute(input: IGetProfileInput): Promise<IGetProfileOutput> {
@@ -25,6 +26,12 @@ export default class GetProfileUsecase implements IUsecase<IGetProfileInput, IGe
       throw new UserNotFoundException("User not found!");
     }
 
+    const isUserDoctor = user.getUserRoles()?.some((userRole) => userRole.getRoleEntity()?.getName() === "DOCTOR");
+
+    if (isUserDoctor) {
+      await this.getSpecialisms(user);
+    }
+
     return user;
   }
 
@@ -36,6 +43,12 @@ export default class GetProfileUsecase implements IUsecase<IGetProfileInput, IGe
     }
 
     return address;
+  }
+
+  private async getSpecialisms(user: UserEntity): Promise<void> {
+    const userSpecialisms = await this.userSpecialismRepository.getUserSpecialisms(user.getId()!);
+
+    user.setuserSpecialisms(userSpecialisms);
   }
 
   private mountOutput(user: UserEntity, address: AddressEntity): IGetProfileOutput {
@@ -55,6 +68,15 @@ export default class GetProfileUsecase implements IUsecase<IGetProfileInput, IGe
         houseNumber: address.getHouseNumber(),
         complement: address.getComplement(),
       },
+      specialisms:
+        user.getuserSpecialisms() === null
+          ? null
+          : user.getuserSpecialisms()!.map((userSpecialism) => {
+              return {
+                id: userSpecialism.getSpecialismId()!,
+                name: userSpecialism.getSpecialism()?.getName()!,
+              };
+            }),
     };
   }
 }

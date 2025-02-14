@@ -1,5 +1,6 @@
 import UserEntity from "../../../core/entity/UserEntity";
 import { IUserRepository } from "../../../core/interfaces/repository/IUserRepository";
+import { IPageableList } from "../../../core/interfaces/utils/IPageableList";
 import pool from "../database/postgres/connection";
 import UserMapper from "../mappers/userMapper";
 
@@ -17,15 +18,20 @@ export default class UserRepositoryPg implements IUserRepository {
   }
 
   public async findById(id: string): Promise<UserEntity | null> {
-    const { rows } = await pool.query(
+    const rows = await pool.query(
       `
-        SELECT * FROM tb_users
+        SELECT distinct usr.*, 
+        array_agg(jsonb_build_object('user_id', url.usl_user_id, 'role_id', url.usl_role_id, 'url_role', jsonb_build_object('id', rl.rl_id, 'name', rl.rl_name))) as usr_user_roles_list
+        FROM tb_users usr
+        JOIN tb_users_roles url ON url.usl_user_id = usr.usr_id
+        JOIN tb_roles rl ON rl.rl_id = url.usl_role_id
         WHERE usr_id = $1
+        GROUP BY (usr.usr_id)
       `,
       [id]
     );
 
-    return UserMapper.toDomain(rows[0]);
+    return UserMapper.toDomain(rows.rows[0]);
   }
 
   public async persist(user: UserEntity): Promise<UserEntity> {
@@ -41,5 +47,54 @@ export default class UserRepositoryPg implements IUserRepository {
     );
 
     return UserMapper.toDomain(rows[0])!;
+  }
+
+  public async findAllDoctors(
+    page: number,
+    size: number,
+    specialism: string | null,
+    city: string | null
+  ): Promise<IPageableList<UserEntity>> {
+    const { rows } = await pool.query(
+      `
+        SELECT distinct usr.*,
+        jsonb_build_object('id', adr.adr_id, 'street', adr.adr_street, 'neighbourhood', adr.adr_neighbourhood, 'state', adr.adr_state, 'city', adr.adr_city, 'country', adr.adr_country, 'zipcode', adr.adr_zipcode, 'house_number', adr.adr_house_number, 'complement', adr.adr_complement) AS usr_address,
+        array_agg(jsonb_build_object('id', spe.spe_id, 'name', spe.spe_name)) AS usr_specialism_list
+        FROM tb_users usr
+        JOIN tb_address adr ON adr.adr_user_id = usr.usr_id
+        JOIN tb_users_specialisms usp ON usp.usp_user_id = usr.usr_id
+        JOIN tb_specialisms spe ON spe.spe_id = usp.usp_spe_id
+        WHERE ( $3::varchar IS NULL OR lower(spe.spe_name) LIKE concat('%', lower($3), '%') )
+        AND ( $4::varchar IS NULL OR lower(adr.adr_city) LIKE concat('%', lower($4), '%') )
+        GROUP BY adr.adr_id, usr.usr_id 
+        ORDER BY usr.usr_name ASC
+        LIMIT $2 OFFSET ($1 - 1) * $2
+      `,
+      [page, size, specialism, city]
+    );
+
+    const countQuery = await pool.query(
+      `
+        SELECT count(*) AS full_count FROM tb_users usr
+        JOIN tb_address adr ON adr.adr_user_id = usr.usr_id
+        JOIN tb_users_specialisms usp ON usp.usp_user_id = usr.usr_id
+        JOIN tb_specialisms spe ON spe.spe_id = usp.usp_spe_id
+        WHERE ( $1::varchar IS NULL OR lower(spe.spe_name) LIKE concat('%', lower($1), '%') )
+        AND ( $2::varchar IS NULL OR lower(adr.adr_city) LIKE concat('%', lower($2), '%') )
+        GROUP BY adr.adr_id, usr.usr_id 
+        ORDER BY usr.usr_name ASC
+      `,
+      [specialism, city]
+    );
+
+    const count = countQuery.rows[0].full_count !== null ? +countQuery.rows[0].full_count : 0;
+
+    return {
+      page: page,
+      size,
+      totalItems: count,
+      totalPages: count === 0 ? 0 : (count - 1) / size + 1,
+      data: rows.map((row) => UserMapper.toDomain(row)!),
+    };
   }
 }

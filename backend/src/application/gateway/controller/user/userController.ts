@@ -7,17 +7,25 @@ import { ITokenConfig } from "../../../../core/interfaces/adapter/ITokenConfig";
 import { IGetProfileInput } from "../../../../core/usecase/user/getProfile/dto/getProfileInput";
 import { IGetProfileOutput } from "../../../../core/usecase/user/getProfile/dto/getProfileOutput";
 import { IForgotPasswordInput } from "../../../../core/usecase/user/forgotPassword/dto/forgotPasswordInput";
+import { IListDoctorsInput } from "../../../../core/usecase/user/listDoctors/dto/listDoctorsInput";
+import { IListDoctorsOutput } from "../../../../core/usecase/user/listDoctors/dto/listDoctorsOutput";
+import { IPageableList } from "../../../../core/interfaces/utils/IPageableList";
 import TokenConfig from "../../../config/jwt/tokenConfig";
 import RegisterUserUsecaseFactory from "../../../factory/user/registerUserUsecaseFactory";
 import AuthUserFactory from "../../../factory/user/authUserFactory";
 import GetProfileFactory from "../../../factory/user/getProfileFactory";
 import ForgotPasswordFactory from "../../../factory/user/forgotPasswordFactory";
+import ListDoctorsFactory from "../../../factory/user/listDoctorsFactory";
 
 export default class UserController {
   private readonly registerUserUsecase: IUsecase<IRegisterUserInput, void>;
   private readonly authUserUsecase: IUsecase<IAuthUserInput, IAuthUserOutput>;
   private readonly getProfileUsecase: IUsecase<IGetProfileInput, IGetProfileOutput>;
   private readonly forgotPasswordUsecase: IUsecase<IForgotPasswordInput, void>;
+  private readonly listDoctorsUsecase: IUsecase<
+    IListDoctorsInput,
+    IPageableList<IListDoctorsOutput>
+  >;
 
   private readonly tokenConfig: ITokenConfig;
 
@@ -26,6 +34,7 @@ export default class UserController {
     this.authUserUsecase = AuthUserFactory.create();
     this.getProfileUsecase = GetProfileFactory.create();
     this.forgotPasswordUsecase = ForgotPasswordFactory.create();
+    this.listDoctorsUsecase = ListDoctorsFactory.create();
 
     this.tokenConfig = new TokenConfig();
   }
@@ -63,5 +72,16 @@ export default class UserController {
     await this.forgotPasswordUsecase.execute({ email: req.body.email });
 
     return res.status(200).send();
+  }
+
+  public async listDoctors(req: Request, res: Response, _next: NextFunction) {
+    const output = await this.listDoctorsUsecase.execute({
+      page: req.params.page ? +req.params.page : 1,
+      size: req.params.size ? +req.params.size : 5,
+      city: req.params.city ?? null,
+      specialism: req.params.specialism ?? null,
+    });
+
+    return res.status(200).send(output);
   }
 }

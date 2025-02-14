@@ -16,4 +16,19 @@ export default class UserSpecialismRepository implements IUserSpecialismReposito
 
     return UserSpecialismMapper.toDomain(rows[0])!;
   }
+
+  public async getUserSpecialisms(id: string): Promise<UserSpecialismEntity[]> {
+    const { rows } = await pool.query(
+      `
+        SELECT usp.*, 
+        jsonb_build_object('id', spe.spe_id, 'name', spe.spe_name) as usp_specialism
+        FROM tb_users_specialisms usp
+        JOIN tb_specialisms spe ON spe.spe_id = usp.usp_spe_id
+        WHERE usp.usp_user_id = $1
+      `,
+      [id]
+    );
+
+    return rows.map((row) => UserSpecialismMapper.toDomain(row)!);
+  }
 }

@@ -1,21 +1,26 @@
+import SpecialismEntity from "./SpecialismEntity";
 import UserEntity from "./UserEntity";
 
 export default class UserSpecialismEntity {
   private userId: string | null;
   private specialismId: string | null;
   private createdAt: string | null;
+
   private user: UserEntity | null;
+  private specialism: SpecialismEntity | null;
 
   constructor(
     userId: string | null,
     specialismId: string | null,
     createdAt: string | null,
-    user: UserEntity | null
+    user: UserEntity | null,
+    specialism: SpecialismEntity | null
   ) {
     this.userId = userId;
     this.specialismId = specialismId;
     this.createdAt = createdAt;
     this.user = user;
+    this.specialism = specialism;
   }
 
   public getUserId(): string | null {
@@ -48,5 +53,13 @@ export default class UserSpecialismEntity {
 
   public setUser(user: UserEntity | null): void {
     this.user = user;
+  }
+
+  public getSpecialism(): SpecialismEntity | null {
+    return this.specialism;
+  }
+
+  public setSpecialism(specialism: SpecialismEntity | null): void {
+    this.specialism = specialism;
   }
 }

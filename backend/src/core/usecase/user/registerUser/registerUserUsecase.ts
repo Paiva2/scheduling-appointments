@@ -102,7 +102,16 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
   }
 
   private fillNewUser(input: IRegisterUserInput): UserEntity {
-    return new UserEntity(null, input.name, input.email, input.password, new Date());
+    return new UserEntity(
+      null,
+      input.name,
+      input.email,
+      input.password,
+      new Date(),
+      null,
+      null,
+      null
+    );
   }
 
   private saveUser(user: UserEntity): Promise<UserEntity> {
@@ -160,7 +169,7 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
   }
 
   private fillUserSpecialism(user: UserEntity, specialism: SpecialismEntity): UserSpecialismEntity {
-    return new UserSpecialismEntity(user.getId(), specialism.getId(), null, null);
+    return new UserSpecialismEntity(user.getId(), specialism.getId(), null, user, null);
   }
 
   private async saveUserSpecialism(userSpecialism: UserSpecialismEntity): Promise<void> {

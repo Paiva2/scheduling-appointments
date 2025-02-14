@@ -1,3 +1,7 @@
+import AddressEntity from "./AddressEntity";
+import UserSpecialismEntity from "./UserEspecialismEntity";
+import UserRoleEntity from "./UserRoleEntity";
+
 export default class UserEntity {
   private id: string | null;
   private name: string;
@@ -5,18 +9,28 @@ export default class UserEntity {
   private password: string;
   private createdAt: Date | null;
 
+  private address: AddressEntity | null;
+  private userSpecialisms: UserSpecialismEntity[] | null;
+  private userRoles: UserRoleEntity[] | null;
+
   constructor(
     id: string | null,
     name: string,
     email: string,
     password: string,
-    createdAt: Date | null
+    createdAt: Date | null,
+    address: AddressEntity | null,
+    userSpecialisms: UserSpecialismEntity[] | null,
+    userRoles: UserRoleEntity[] | null
   ) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
     this.createdAt = createdAt;
+    this.address = address;
+    this.userSpecialisms = userSpecialisms;
+    this.userRoles = userRoles;
   }
 
   public getId(): string | null {
@@ -57,5 +71,29 @@ export default class UserEntity {
 
   public setCreatedAt(date: Date | null) {
     this.createdAt = date;
+  }
+
+  public getuserSpecialisms(): UserSpecialismEntity[] | null {
+    return this.userSpecialisms;
+  }
+
+  public setuserSpecialisms(userSpecialism: UserSpecialismEntity[] | null) {
+    this.userSpecialisms = userSpecialism;
+  }
+
+  public getAddress(): AddressEntity | null {
+    return this.address;
+  }
+
+  public setAddress(address: AddressEntity | null) {
+    this.address = address;
+  }
+
+  public getUserRoles(): UserRoleEntity[] | null {
+    return this.userRoles;
+  }
+
+  public setUserRoles(userRole: UserRoleEntity[] | null) {
+    this.userRoles = userRole;
   }
 }

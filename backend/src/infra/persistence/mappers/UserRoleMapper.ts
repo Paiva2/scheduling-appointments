@@ -12,7 +12,7 @@ export class UserRoleMapper {
       null
     );
 
-    if (userRole.rl_id !== null) {
+    if (!!userRole.rl_id) {
       userRoleDomain.setRoleEntity(
         new RoleEntity(userRole.rl_id, userRole.rl_name!, userRole.usl_created_at)
       );

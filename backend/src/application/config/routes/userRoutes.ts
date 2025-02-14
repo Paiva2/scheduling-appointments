@@ -25,14 +25,19 @@ export default function userRoutes(app: Express) {
 
   app.get(
     `${apiVersionPrefix}/user/profile`,
-    [authValidator([EnumRole.USER.toString()])],
+    [authValidator(["*"])],
     (req: Request, res: Response, next: NextFunction) => userController.getProfile(req, res, next)
   );
 
   app.post(
     `${apiVersionPrefix}/user/forgot-password`,
     [inputHandler(forgotPasswordInput)],
-    (req: Request, res: Response, next: NextFunction) =>
-      userController.forgotPassword(req, res, next)
+    (req: Request, res: Response, next: NextFunction) => userController.forgotPassword(req, res, next)
+  );
+
+  app.get(
+    `${apiVersionPrefix}/user/list/doctors`,
+    [authValidator(["*"])],
+    (req: Request, res: Response, next: NextFunction) => userController.listDoctors(req, res, next)
   );
 }

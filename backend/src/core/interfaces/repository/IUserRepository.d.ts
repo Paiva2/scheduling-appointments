@@ -6,4 +6,11 @@ export interface IUserRepository {
   findById(id: string): Promise<UserEntity | null>;
 
   persist(user: UserEntity): Promise<UserEntity>;
+
+  findAllDoctors(
+    page: number,
+    size: number,
+    specialismId: string | null,
+    city: string | null
+  ): Promise<IPageableList<UserEntity>>;
 }

@@ -1,4 +1,4 @@
-export interface IGetProfileOutput {
+export interface IListDoctorsOutput {
   id: string;
   name: string;
   email: string;
@@ -14,8 +14,8 @@ export interface IGetProfileOutput {
     houseNumber: string;
     complement: string | null;
   };
-  specialisms: Array<{
+  specialismList: Array<{
     id: string;
     name: string;
-  }> | null;
+  }>;
 }
