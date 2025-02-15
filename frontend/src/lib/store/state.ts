@@ -7,6 +7,8 @@ export const state: IState = {
     email: null,
     name: null,
     createdAt: null,
+    roles: [],
+    specialisms: [],
     address: {
       id: null,
       street: null,

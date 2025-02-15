@@ -1,17 +1,19 @@
 <template>
   <v-app>
     <v-main class="main d-flex">
+      <aside-menu />
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import { RouterView } from "vue-router";
 import { mapState } from "vuex";
 import { actionTypes } from "@/lib/store/types/actionTypes";
+import AsideMenu from "@/components/aside-menu/AsideMenu.vue";
 
 export default {
+  components: { AsideMenu },
   name: "App",
   computed: {
     ...mapState(["authToken"]),
@@ -26,4 +28,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.main {
+  width: 100%;
+}
+</style>

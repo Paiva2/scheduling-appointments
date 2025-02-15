@@ -5,6 +5,14 @@ export interface IState {
     email: string | null;
     name: string | null;
     createdAt: Date | null;
+    roles: Array<{
+      name: string;
+      roleId: string;
+    }>;
+    specialisms: Array<{
+      id: string;
+      name: string;
+    }> | null;
     address: {
       id: string | null;
       street: string | null;

@@ -14,6 +14,10 @@ export interface IGetProfileOutput {
     houseNumber: string;
     complement: string | null;
   };
+  roles: Array<{
+    roleId: string;
+    name: string;
+  }>;
   specialisms: Array<{
     id: string;
     name: string;

@@ -57,6 +57,15 @@ export default class GetProfileUsecase implements IUsecase<IGetProfileInput, IGe
       email: user.getEmail(),
       name: user.getName(),
       createdAt: user.getCreatedAt()!,
+      roles:
+        user.getUserRoles() === null
+          ? []
+          : user.getUserRoles()!.map((userRoles) => {
+              return {
+                name: userRoles.getRoleEntity()?.getName()!,
+                roleId: userRoles.getRoleId(),
+              };
+            }),
       address: {
         id: address.getId()!,
         street: address.getStreet(),

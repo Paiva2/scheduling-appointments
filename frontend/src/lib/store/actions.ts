@@ -37,6 +37,7 @@ const actions = {
         Authorization: `Bearer ${state.authToken}`,
       },
     });
+
     commit(mutationTypes.USER.SET_PROFILE, data);
     return data;
   },

@@ -55,12 +55,7 @@
               validate-on="submit"
             >
               <template v-slot:append-inner>
-                <v-btn
-                  @click="togglePasswordShow"
-                  size="32"
-                  class="elevation-0 inner-btn-icon"
-                  :icon="iconPassword"
-                />
+                <v-btn @click="togglePasswordShow" size="32" class="elevation-0 inner-btn-icon" :icon="iconPassword" />
               </template>
             </v-text-field>
 
@@ -104,6 +99,7 @@
               name="specialism"
               variant="underlined"
               hide-details
+              multiple
             />
           </v-container>
 
@@ -130,9 +126,7 @@
 
       <template v-slot:actions>
         <div class="stepper-actions d-flex px-3 py-4">
-          <v-btn tile flat @click="previous" :disabled="stepperValue < 2" class="btn-prev">
-            Previous
-          </v-btn>
+          <v-btn tile flat @click="previous" :disabled="stepperValue < 2" class="btn-prev"> Previous </v-btn>
           <v-btn @click="next" class="btn-next" tile flat>
             {{ tituloBotao }}
           </v-btn>
