@@ -89,18 +89,28 @@
             />
 
             <v-select
-              :items="specialisms"
+              v-if="formFields.role === 'Doctor' && specialismsList?.length"
               :rules="specialismRule"
-              v-show="formFields.role === 'Doctor'"
+              :items="specialismsList"
+              v-model="this.formFields.specialismList"
+              item-title="name"
+              item-value="id"
               label="Select your specialism"
-              v-model="formFields.specialism"
               color="blue-darken-3"
               id="specialism"
               name="specialism"
               variant="underlined"
-              hide-details
               multiple
-            />
+            >
+              <template v-slot:selection="{ item, index }">
+                <v-chip v-if="index < 2">
+                  <span>{{ item.title }}</span>
+                </v-chip>
+                <span v-if="index === 2" class="text-grey text-caption align-self-center">
+                  (+{{ formFields.specialismList.length - 2 }} others)
+                </span>
+              </template>
+            </v-select>
           </v-container>
 
           <p class="link">
@@ -150,6 +160,9 @@ export default {
     const toast = useToast();
     return { toast };
   },
+  async mounted() {
+    await this.fillSpecialisms();
+  },
   watch: {
     "formFields.role"() {
       this.specialism = null;
@@ -169,15 +182,14 @@ export default {
       loadingRegister: false,
       labels: ["Personal info", "Address"],
       roles: ["Pacient", "Doctor"],
-      specialisms: ["Cardiology", "Neurology", "Dermatology", "Pediatrics", "Orthopedics"],
-      specialism: null,
+      specialisms: [],
       formFields: {
         name: "",
         email: "",
         password: "",
         confirmPassword: "",
         role: "Pacient",
-        specialism: "",
+        specialismList: [],
         address: {
           street: "",
           neighbourhood: "",
@@ -282,6 +294,13 @@ export default {
     },
   },
   methods: {
+    async fillSpecialisms() {
+      try {
+        this.specialismsList = await this.$store.dispatch(actionTypes.SPECIALISM.GET_SPECIALISMS);
+      } catch (e) {
+        this.toast.error("Error while getting specialisms!");
+      }
+    },
     async handleRegister() {
       this.loadingRegister = true;
 
@@ -291,7 +310,7 @@ export default {
           password: this.formFields.password,
           name: this.formFields.name,
           role: this.formFields.role.toUpperCase(),
-          specialism: this.formFields.specialism.toUpperCase(),
+          specialism: this.formFields.specialismList,
           address: {
             street: this.formFields.address.street,
             neighbourhood: this.formFields.address.neighbourhood,

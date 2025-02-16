@@ -12,11 +12,7 @@ import {
   SpecialismEntity,
   UserSpecialismEntity,
 } from "../../../entity";
-import {
-  InvalidFieldException,
-  RoleNotFoundException,
-  SpecialismNotFoundException,
-} from "../../common/exception";
+import { InvalidFieldException, RoleNotFoundException, SpecialismNotFoundException } from "../../common/exception";
 import {
   IUserRepository,
   IAddressRepository,
@@ -25,6 +21,7 @@ import {
   ISpecialismRepository,
   IUserSpecialismRepository,
 } from "../../../interfaces/repository/index";
+import { EnumSpecialism } from "../../../enum/EnumSpecialism";
 
 export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput, void> {
   private EMAIL_REGEX =
@@ -62,10 +59,10 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
 
       await this.persistUserRole(userRole);
 
-      if (input.role === "DOCTOR" && input.specialism !== null) {
-        const specialism = await this.findSpecialism(input.specialism);
-        const fillUserSpecialism = this.fillUserSpecialism(user, specialism);
-        await this.saveUserSpecialism(fillUserSpecialism);
+      if (input.role === "DOCTOR" && input.specialismListId !== null && input.specialismListId.length) {
+        const specialismList = await this.findSpecialisms(input.specialismListId);
+        const fillUserSpecialisms = this.fillUserSpecialisms(user, specialismList);
+        await this.saveUserSpecialism(fillUserSpecialisms);
       }
 
       await this.databaseUtils.commitTransaction();
@@ -102,16 +99,7 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
   }
 
   private fillNewUser(input: IRegisterUserInput): UserEntity {
-    return new UserEntity(
-      null,
-      input.name,
-      input.email,
-      input.password,
-      new Date(),
-      null,
-      null,
-      null
-    );
+    return new UserEntity(null, input.name, input.email, input.password, new Date(), null, null, null);
   }
 
   private saveUser(user: UserEntity): Promise<UserEntity> {
@@ -156,10 +144,8 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
     await this.userRoleRepository.persist(userRole);
   }
 
-  private async findSpecialism(specialismName: string): Promise<SpecialismEntity> {
-    const specialism = await this.specialismRepository.findSpecialismByName(
-      specialismName.toUpperCase()
-    );
+  private async findSpecialisms(specialismName: string[]): Promise<SpecialismEntity[]> {
+    const specialism = await this.specialismRepository.findSpecialismsId(specialismName);
 
     if (specialism == null) {
       throw new SpecialismNotFoundException();
@@ -168,11 +154,17 @@ export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput,
     return specialism;
   }
 
-  private fillUserSpecialism(user: UserEntity, specialism: SpecialismEntity): UserSpecialismEntity {
-    return new UserSpecialismEntity(user.getId(), specialism.getId(), null, user, null);
+  private fillUserSpecialisms(user: UserEntity, specialismList: SpecialismEntity[]): UserSpecialismEntity[] {
+    const specialisms = [];
+
+    for (let specialism of specialismList) {
+      specialisms.push(new UserSpecialismEntity(user.getId(), specialism.getId(), null, user, null));
+    }
+
+    return specialisms;
   }
 
-  private async saveUserSpecialism(userSpecialism: UserSpecialismEntity): Promise<void> {
-    await this.userSpecialismRepository.persist(userSpecialism);
+  private async saveUserSpecialism(userSpecialisms: UserSpecialismEntity[]): Promise<void> {
+    await this.userSpecialismRepository.persistAll(userSpecialisms);
   }
 }

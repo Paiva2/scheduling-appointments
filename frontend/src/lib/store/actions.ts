@@ -54,6 +54,11 @@ const actions = {
 
     return data;
   },
+
+  async [actionTypes.SPECIALISM.GET_SPECIALISMS]({ commit, state }) {
+    const { data } = await api.get(`/specialism/list`);
+    return data;
+  },
 };
 
 export default actions;

@@ -1,12 +1,11 @@
 import { Express, NextFunction, Request, Response } from "express";
-import UserController from "../../gateway/controller/user/userController";
 import { apiVersionPrefix } from "../../../main";
-import { inputHandler } from "../../middleware/inputHandler";
 import { registerUserInput } from "../../../core/usecase/user/registerUser/dto/IRegisterUserInput";
+import { inputHandler } from "../../middleware/inputHandler";
 import { authUserInput } from "../../../core/usecase/user/authUser/dto/authUserInput";
-import authValidator from "../../middleware/authValidator";
-import { EnumRole } from "../../../core/enum";
 import { forgotPasswordInput } from "../../../core/usecase/user/forgotPassword/dto/forgotPasswordInput";
+import UserController from "../../gateway/controller/user/userController";
+import authValidator from "../../middleware/authValidator";
 
 export default function userRoutes(app: Express) {
   const userController = new UserController();

@@ -7,7 +7,7 @@ export interface IRegisterUserInput {
   name: string;
   password: string;
   role: EnumRole;
-  specialism: EnumSpecialism;
+  specialismListId: string[];
   address: IRegisterUserInputAddress;
 }
 
@@ -27,13 +27,7 @@ export const registerUserInput = z.object({
   name: z.string().nonempty(),
   password: z.string().nonempty(),
   role: z.enum([EnumRole.USER, EnumRole.DOCTOR]),
-  specialism: z.enum([
-    EnumSpecialism.CARDIOLOGY,
-    EnumSpecialism.NEUROLOGY,
-    EnumSpecialism.DERMATOLOGY,
-    EnumSpecialism.PEDIATRICS,
-    EnumSpecialism.ORTHOPEDICS,
-  ]),
+  specialismListId: z.array(z.string().uuid()).nonempty(),
   address: z.object({
     street: z.string().nonempty(),
     neighbourhood: z.string().nonempty(),

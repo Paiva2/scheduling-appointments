@@ -3,4 +3,7 @@ export const mutationTypes = {
     SET_AUTH: "setAuth",
     SET_PROFILE: "setProfile",
   },
+  SPECIALISM: {
+    SET_LIST: "setList",
+  },
 };

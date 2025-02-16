@@ -8,4 +8,7 @@ export const actionTypes = {
   LIST: {
     GET_DOCTORS: "getDoctors",
   },
+  SPECIALISM: {
+    GET_SPECIALISMS: "getSpecialisms",
+  },
 };

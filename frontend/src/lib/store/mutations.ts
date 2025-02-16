@@ -5,6 +5,11 @@ const mutations = {
   [mutationTypes.USER.SET_AUTH](state: IState, payload) {
     state.authToken = payload;
   },
+
+  [mutationTypes.USER.SET_PROFILE](state: IState, payload) {
+    state.user = payload;
+  },
+
   [mutationTypes.USER.SET_PROFILE](state: IState, payload) {
     state.user = payload;
   },

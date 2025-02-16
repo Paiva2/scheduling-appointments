@@ -63,7 +63,7 @@
         validate-on="submit"
       />
 
-      <v-text-field
+      <v-select
         hide-details
         label="State"
         type="text"
@@ -72,6 +72,7 @@
         :rules="stateRules"
         v-model="formFields.address.state"
         validate-on="submit"
+        :items="locations"
       />
 
       <v-text-field
@@ -108,6 +109,35 @@ export default {
   },
   data() {
     return {
+      locations: [
+        "Acre",
+        "Alagoas",
+        "Amapá",
+        "Amazonas",
+        "Bahia",
+        "Ceará",
+        "Distrito Federal",
+        "Espírito Santo",
+        "Goiás",
+        "Maranhão",
+        "Mato Grosso",
+        "Mato Grosso do Sul",
+        "Minas Gerais",
+        "Pará",
+        "Paraíba",
+        "Paraná",
+        "Pernambuco",
+        "Piauí",
+        "Rio de Janeiro",
+        "Rio Grande do Norte",
+        "Rio Grande do Sul",
+        "Rondônia",
+        "Roraima",
+        "Santa Catarina",
+        "São Paulo",
+        "Sergipe",
+        "Tocantins",
+      ],
       streetRules: [
         (value) => {
           if (value?.length >= 1) return true;

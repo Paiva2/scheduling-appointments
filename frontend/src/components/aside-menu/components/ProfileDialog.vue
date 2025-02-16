@@ -149,6 +149,7 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
+import { actionTypes } from "@/lib/store/types/actionTypes";
 
 export default {
   name: "ProfileDialog",
@@ -162,19 +163,12 @@ export default {
     ...mapState(["user"]),
     ...mapGetters(["isDoctor"]),
   },
-  mounted() {
+  async mounted() {
     this.fillFormFields();
+    await this.fillSpecialisms();
   },
   data() {
     return {
-      specialisms: [
-        //todo: fetch from backend
-        { id: "803d0fd2-8f89-408f-9a1f-ed68cbb526e7", name: "CARDIOLOGY" },
-        { id: "1e7e180d-f6ca-4601-8d03-e63e534e4a20", name: "NEUROLOGY" },
-        { id: "1aa8e3f2-e1f4-4a2f-b9dd-3bb34b640657", name: "DERMATOLOGY" },
-        { id: "454c7bb9-65de-4139-9120-9e3ebfa2b77b", name: "PEDRIATRICS" },
-        { id: "b462c2de-0622-4abb-b1b9-99922cd8b724", name: "ORTHOPEDICS" },
-      ],
       formFields: {
         name: "",
         email: "",
@@ -207,11 +201,15 @@ export default {
     };
   },
   methods: {
-    getText(item) {
-      console.log(item);
-      return "";
+    async fillSpecialisms() {
+      try {
+        this.specialisms = await this.$store.dispatch(actionTypes.SPECIALISM.GET_SPECIALISMS);
+      } catch (e) {
+        this.toast.error("Error while getting specialisms!");
+      }
     },
     closeDialog() {
+      this.fillFormFields();
       this.$emit("close");
     },
     fillFormFields() {
