@@ -67,7 +67,7 @@ export default class UserMapper {
         );
       });
 
-      userEntity.setSpecialismList(specialismList);
+      userEntity.setuserSpecialisms(specialismList);
     }
 
     return userEntity;

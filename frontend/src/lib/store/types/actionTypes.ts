@@ -5,4 +5,7 @@ export const actionTypes = {
     PROFILE: "profile",
     FORGOT_PASSWORD: "forgotPassword",
   },
+  LIST: {
+    GET_DOCTORS: "getDoctors",
+  },
 };

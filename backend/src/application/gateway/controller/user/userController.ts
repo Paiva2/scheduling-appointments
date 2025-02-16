@@ -22,10 +22,7 @@ export default class UserController {
   private readonly authUserUsecase: IUsecase<IAuthUserInput, IAuthUserOutput>;
   private readonly getProfileUsecase: IUsecase<IGetProfileInput, IGetProfileOutput>;
   private readonly forgotPasswordUsecase: IUsecase<IForgotPasswordInput, void>;
-  private readonly listDoctorsUsecase: IUsecase<
-    IListDoctorsInput,
-    IPageableList<IListDoctorsOutput>
-  >;
+  private readonly listDoctorsUsecase: IUsecase<IListDoctorsInput, IPageableList<IListDoctorsOutput>>;
 
   private readonly tokenConfig: ITokenConfig;
 
@@ -76,10 +73,10 @@ export default class UserController {
 
   public async listDoctors(req: Request, res: Response, _next: NextFunction) {
     const output = await this.listDoctorsUsecase.execute({
-      page: req.params.page ? +req.params.page : 1,
-      size: req.params.size ? +req.params.size : 5,
-      city: req.params.city ?? null,
-      specialism: req.params.specialism ?? null,
+      page: req.query.page ? Number(req.query.page) : 1,
+      size: req.query.size ? Number(req.query.size) : 5,
+      state: req.query.state as string,
+      specialism: req.query.specialism as string,
     });
 
     return res.status(200).send(output);

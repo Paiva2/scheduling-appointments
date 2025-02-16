@@ -5,9 +5,7 @@ import { IPageableList } from "../../../interfaces/utils/IPageableList";
 import { IListDoctorsInput } from "./dto/listDoctorsInput";
 import { IListDoctorsOutput } from "./dto/listDoctorsOutput";
 
-export default class ListDoctorsUsecase
-  implements IUsecase<IListDoctorsInput, IPageableList<IListDoctorsOutput>>
-{
+export default class ListDoctorsUsecase implements IUsecase<IListDoctorsInput, IPageableList<IListDoctorsOutput>> {
   constructor(private readonly userRepository: IUserRepository) {}
 
   public async execute(input: IListDoctorsInput): Promise<IPageableList<IListDoctorsOutput>> {
@@ -27,7 +25,7 @@ export default class ListDoctorsUsecase
   }
 
   private async findAllDoctors(input: IListDoctorsInput): Promise<IPageableList<UserEntity>> {
-    return this.userRepository.findAllDoctors(input.page, input.size, input.specialism, input.city);
+    return this.userRepository.findAllDoctors(input.page, input.size, input.specialism, input.state);
   }
 
   private mountOutput(doctors: IPageableList<UserEntity>): IPageableList<IListDoctorsOutput> {
@@ -53,7 +51,7 @@ export default class ListDoctorsUsecase
             houseNumber: doctor.getAddress()?.getHouseNumber()!,
             complement: doctor.getAddress()?.getComplement()!,
           },
-          specialismList: doctor.getSpecialismList()!.map((specialism) => {
+          specialismList: doctor.getuserSpecialisms()!.map((specialism) => {
             return {
               id: specialism.getSpecialism()?.getId()!,
               name: specialism.getSpecialism()?.getName()!,

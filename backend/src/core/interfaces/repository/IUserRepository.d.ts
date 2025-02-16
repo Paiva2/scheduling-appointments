@@ -11,6 +11,6 @@ export interface IUserRepository {
     page: number,
     size: number,
     specialismId: string | null,
-    city: string | null
+    state: string | null
   ): Promise<IPageableList<UserEntity>>;
 }

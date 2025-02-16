@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { store } from "@/lib/store/store";
-import { mutationTypes } from "../lib/store/types/mutationTypes";
+import { mutationTypes } from "@/lib/store/types/mutationTypes";
 import LoginView from "@/views/login/LoginView.vue";
 import RegisterView from "@/views/register/RegisterView.vue";
-import ForgotPasswordView from "../views/forgot-password/ForgotPasswordView.vue";
+import ForgotPasswordView from "@/views/forgot-password/ForgotPasswordView.vue";
 import HomeView from "@/views/home/HomeView.vue";
 import Cookies from "js-cookie";
+import DoctorsListView from "@/views/doctors-list/DoctorsListView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +34,24 @@ const router = createRouter({
       path: "/forgot-password",
       name: "forgot-password",
       component: ForgotPasswordView,
+    },
+    {
+      path: "/search",
+      name: "doctors-list",
+      component: DoctorsListView,
+      beforeEnter: (to, from, next) => {
+        if (to.query?.specialism === null || to.query.state === null) {
+          next("/home");
+          return;
+        }
+
+        if (!("specialism" in to.query) || !("state" in to.query)) {
+          next("/home");
+          return;
+        }
+
+        next();
+      },
     },
   ],
 });

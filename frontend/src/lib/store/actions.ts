@@ -41,6 +41,19 @@ const actions = {
     commit(mutationTypes.USER.SET_PROFILE, data);
     return data;
   },
+
+  async [actionTypes.LIST.GET_DOCTORS]({ commit, state }, payload) {
+    const { data } = await api.get(
+      `/user/list/doctors?page=${payload.page}&size=${payload.size}&state=${payload.state}&specialism=${payload.specialism}`,
+      {
+        headers: {
+          Authorization: `Bearer ${state.authToken}`,
+        },
+      }
+    );
+
+    return data;
+  },
 };
 
 export default actions;

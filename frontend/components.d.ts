@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AsideMenu: typeof import('./src/components/aside-menu/AsideMenu.vue')['default']
     DefaultDialog: typeof import('./src/components/dialog/DefaultDialog.vue')['default']
+    EmptyFallback: typeof import('./src/components/empty-fallback/EmptyFallback.vue')['default']
     ProfileDialog: typeof import('./src/components/aside-menu/components/ProfileDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
