@@ -11,4 +11,6 @@ export const actionTypes = {
   SPECIALISM: {
     GET_SPECIALISMS: "getSpecialisms",
   },
+  GET_STATES: "getStates",
+  GET_ZIPCODE_INFOS: "getZipcodeInfos",
 };

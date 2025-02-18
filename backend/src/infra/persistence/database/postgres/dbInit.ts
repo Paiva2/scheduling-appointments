@@ -13,8 +13,8 @@ export default async function dbInit() {
 
           CREATE TABLE IF NOT EXISTS tb_address (
             adr_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            adr_street varchar(30) NOT NULL,
-            adr_neighbourhood varchar(20) NOT NULL,
+            adr_street varchar(50) NOT NULL,
+            adr_neighbourhood varchar(50) NOT NULL,
             adr_state varchar(20) NOT NULL,
             adr_city varchar(20) NOT NULL,
             adr_country varchar(20) NOT NULL,

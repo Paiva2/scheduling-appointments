@@ -3,6 +3,13 @@ import vuetify from "./vuetify";
 import Toast from "vue-toastification";
 import type { App } from "vue";
 import { store } from "@/lib/store/store";
+import { VueMaskDirective } from "v-mask";
+
+const vMaskV3 = {
+  beforeMount: VueMaskDirective.bind,
+  updated: VueMaskDirective.componentUpdated,
+  unmounted: VueMaskDirective.unbind,
+};
 
 const toastOptions = {
   draggable: true,
@@ -13,5 +20,5 @@ const toastOptions = {
 };
 
 export function registerPlugins(app: App) {
-  app.use(vuetify).use(Toast, toastOptions).use(store);
+  app.use(vuetify).use(Toast, toastOptions).use(store).directive("mask", vMaskV3);
 }

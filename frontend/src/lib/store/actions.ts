@@ -59,6 +59,16 @@ const actions = {
     const { data } = await api.get(`/specialism/list`);
     return data;
   },
+
+  async [actionTypes.GET_STATES]({ commit, state }, payload) {
+    const { data } = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${payload}/municipios`);
+    return data;
+  },
+
+  async [actionTypes.GET_ZIPCODE_INFOS]({ commit, state }, payload) {
+    const { data } = await api.get(`https://viacep.com.br/ws/${payload}/json/`);
+    return data;
+  },
 };
 
 export default actions;
