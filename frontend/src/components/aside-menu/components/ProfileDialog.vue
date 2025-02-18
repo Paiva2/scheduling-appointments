@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialogProfile.open" max-width="800" persistent>
-    <v-card prepend-icon="mdi-account-outline" size="25" title="Profile">
-      <v-card-text>
-        <v-row dense>
+    <v-card prepend-icon="mdi-account-outline" size="25" title="Profile" class="pa-0 ma-0">
+      <v-form class="d-flex ga-3 form-wrapper" ref="form">
+        <v-row dense class="px-6">
           <v-col cols="12" md="6" sm="6">
             <v-text-field
               color="blue-darken-3"
@@ -11,6 +11,9 @@
               v-model="formFields.name"
               required
               hide-details
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="nameRules"
             ></v-text-field>
           </v-col>
 
@@ -22,19 +25,26 @@
               v-model="formFields.email"
               required
               hide-details
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="emailRules"
             ></v-text-field>
           </v-col>
 
           <v-col cols="12" md="12" sm="6">
             <v-select
+              v-if="isDoctor && specialismsList?.length"
               v-model="formFields.specialisms"
-              :items="specialisms"
+              :items="specialismsList"
               item-title="name"
-              item-value="name"
+              item-value="id"
               label="Specialisms"
               color="blue-darken-3"
               hide-details
               multiple
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="specialismRule"
             >
               <template v-slot:selection="{ item, index }">
                 <v-chip v-if="index < 3">
@@ -55,6 +65,9 @@
               v-model="formFields.password"
               hide-details
               class="mb-2"
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="passwordRules"
             ></v-text-field>
             <v-text-field
               color="blue-darken-3"
@@ -62,23 +75,26 @@
               type="password"
               v-model="formFields.confirmPassword"
               hide-details
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="confirmPasswordRules"
             ></v-text-field>
           </v-col>
         </v-row>
 
-        <v-card-title class="px-0 d-flex align-baseline ga-2">
+        <v-card-title class="px-6 d-flex align-baseline ga-2">
           <v-icon size="25">mdi-home-variant-outline</v-icon>
           Address
         </v-card-title>
-        <v-row dense class="address-rows">
+        <v-row dense class="address-rows px-6">
           <v-col cols="12" md="4" sm="6">
             <v-text-field
               color="blue-darken-3"
               label="Street*"
               v-model="formFields.address.street"
-              required
-              :disabled="loadingZipcode"
-              :loading="loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
+              :rules="streetRules"
               hide-details
             ></v-text-field>
           </v-col>
@@ -89,9 +105,10 @@
               label="Neighbourhood*"
               v-model="formFields.address.neighbourhood"
               required
-              :disabled="loadingZipcode"
-              :loading="loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
               hide-details
+              :rules="neighbourhoodRules"
             ></v-text-field>
           </v-col>
 
@@ -103,6 +120,9 @@
               required
               hide-details
               color="blue-darken-3"
+              :disabled="loadingUpdate"
+              :loading="loadingUpdate"
+              :rules="numberRules"
             ></v-text-field>
           </v-col>
 
@@ -115,9 +135,10 @@
               required
               v-mask="'#####-###'"
               @blur="getZipcodeInfos"
-              :disabled="loadingZipcode"
-              :loading="loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
               hide-details
+              :rules="zipCodeRules"
             ></v-text-field>
           </v-col>
 
@@ -132,7 +153,8 @@
               :items="cities"
               v-model="formFields.address.city"
               validate-on="submit"
-              :disabled="!cities.length || loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
             />
           </v-col>
 
@@ -149,8 +171,9 @@
               v-model="formFields.address.state"
               validate-on="submit"
               :items="locations"
-              :disabled="loadingZipcode"
-              :loading="loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
+              @update:modelValue="this.formFields.address.city = ''"
             />
           </v-col>
 
@@ -160,23 +183,23 @@
               label="Complement"
               type="text"
               v-model="formFields.address.complement"
-              :disabled="loadingZipcode"
-              :loading="loadingZipcode"
+              :disabled="loadingZipcode || loadingUpdate"
+              :loading="loadingZipcode || loadingUpdate"
               hide-details
             ></v-text-field>
           </v-col>
         </v-row>
-      </v-card-text>
 
-      <v-divider></v-divider>
+        <v-divider></v-divider>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-card-actions>
+          <v-spacer></v-spacer>
 
-        <v-btn text="Close" variant="plain" @click="closeDialog()"></v-btn>
+          <v-btn text="Close" variant="plain" @click="closeDialog()"></v-btn>
 
-        <v-btn color="blue-darken-3" text="Save" variant="tonal" @click="closeDialog()"></v-btn>
-      </v-card-actions>
+          <v-btn color="blue-darken-3" text="Save" variant="tonal" @click="update()"></v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
@@ -185,6 +208,7 @@
 import { mapState, mapGetters } from "vuex";
 import { actionTypes } from "@/lib/store/types/actionTypes";
 import { useToast } from "vue-toastification";
+import { AxiosError } from "axios";
 
 export default {
   name: "ProfileDialog",
@@ -213,10 +237,11 @@ export default {
   },
   data() {
     return {
-      ignoreFirstFill: true,
+      loadingUpdate: false,
       lastZipcodeSearched: null,
       loadingZipcode: false,
       cities: [],
+      specialismsList: [],
       formFields: {
         name: "",
         email: "",
@@ -272,7 +297,35 @@ export default {
             )
           )
             return true;
-          return "Invalid e-mail.";
+          return false;
+        },
+      ],
+      passwordRules: [
+        (value) => {
+          if (!value.length) return true;
+          if (value.length > 5) return true;
+          return false;
+        },
+      ],
+      specialismRule: [
+        (value) => {
+          if (this.formFields.role === "Pacient") return true;
+          if (value.length) return true;
+          return false;
+        },
+      ],
+      confirmPasswordRules: [
+        (value) => {
+          if (!this.formFields.password.length) return true;
+          if (value === "") return "Password confirmation can't be empty";
+          if (value === this.formFields.password) return true;
+          return false;
+        },
+      ],
+      nameRules: [
+        (value) => {
+          if (value?.length > 3) return true;
+          return false;
         },
       ],
       streetRules: [
@@ -320,24 +373,46 @@ export default {
     };
   },
   methods: {
+    async update() {
+      const { valid } = await this.$refs.form.validate();
+
+      if (!valid) return;
+
+      try {
+        this.loadingUpdate = true;
+
+        await this.$store.dispatch(actionTypes.USER.UPDATE_PROFILE, this.formFields);
+        await this.$store.dispatch(actionTypes.USER.PROFILE);
+        this.fillFormFields();
+        this.toast.success("Profile updated successfully!");
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          this.toast.error(e.response.data.message);
+        } else {
+          this.toast.error("Error while updating profile...");
+        }
+      } finally {
+        this.loadingUpdate = false;
+      }
+    },
     async fillSpecialisms() {
       try {
-        this.specialisms = await this.$store.dispatch(actionTypes.SPECIALISM.GET_SPECIALISMS);
+        this.specialismsList = await this.$store.dispatch(actionTypes.SPECIALISM.GET_SPECIALISMS);
       } catch (e) {
         this.toast.error("Error while getting specialisms!");
       }
     },
     closeDialog() {
-      this.fillFormFields();
+      if (this.loadingUpdate) return;
       this.$emit("close");
     },
     fillFormFields() {
       this.formFields = {
         name: this.user.name,
         email: this.user.email,
-        password: this.user.password,
-        confirmPassword: this.user.confirmPassword,
-        specialisms: this.user.specialisms ?? [],
+        password: "",
+        confirmPassword: "",
+        specialisms: this.user.specialisms.map((specialism) => specialism.id) ?? [],
         address: {
           street: this.user.address.street,
           neighbourhood: this.user.address.neighbourhood,
@@ -390,7 +465,6 @@ export default {
           this.formFields.address.complement = "";
         }
       } catch (e) {
-        console.log(e);
         this.toast.error("Error while searching zipcode informations... Try again.");
       } finally {
         this.loadingZipcode = false;
@@ -399,25 +473,21 @@ export default {
     async fillCities() {
       this.cities = [];
 
-      if (!this.ignoreFirstFill) {
-        this.formFields.address.city = "";
-      }
-
       try {
         const listCities = await this.$store.dispatch(actionTypes.GET_STATES, this.formFields.address.state);
         this.cities = listCities.map((city) => city.nome);
       } catch (e) {
         this.toast.error("Error while searching cities... Try again.");
-      } finally {
-        if (this.ignoreFirstFill) {
-          this.ignoreFirstFill = false;
-        }
       }
     },
   },
 };
 </script>
 <style>
+.form-wrapper {
+  flex-direction: column;
+}
+
 .address-rows .v-input {
   min-height: 56px;
 }

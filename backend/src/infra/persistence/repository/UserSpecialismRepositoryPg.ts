@@ -3,7 +3,7 @@ import { IUserSpecialismRepository } from "../../../core/interfaces/repository";
 import pool from "../database/postgres/connection";
 import UserSpecialismMapper from "../mappers/userSpecialismMapper";
 
-export default class UserSpecialismRepository implements IUserSpecialismRepository {
+export default class UserSpecialismRepositoryPg implements IUserSpecialismRepository {
   public async persist(userSpecialism: UserSpecialismEntity): Promise<UserSpecialismEntity> {
     const { rows } = await pool.query(
       `
@@ -43,5 +43,9 @@ export default class UserSpecialismRepository implements IUserSpecialismReposito
     );
 
     return rows.map((row) => UserSpecialismMapper.toDomain(row)!);
+  }
+
+  public async removeAllByUser(userId: string): Promise<void> {
+    await pool.query(`DELETE FROM tb_users_specialisms WHERE usp_user_id = $1`, [userId]);
   }
 }

@@ -32,7 +32,7 @@
       <v-list-item class="logout-button" @click="logout" prepend-icon="mdi-logout" title="Logout" value="logout" />
     </v-list>
 
-    <profile-dialog :dialogProfile="dialogProfile" @close="closeProfileDialog" />
+    <profile-dialog :key="dialogProfile.open" :dialogProfile="dialogProfile" @close="closeProfileDialog" />
   </v-navigation-drawer>
 </template>
 

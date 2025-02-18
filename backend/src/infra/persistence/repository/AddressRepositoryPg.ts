@@ -15,9 +15,20 @@ export default class AddressRepositoryPg implements IAddressRepository {
             adr_country,
             adr_zipcode,
             adr_house_number,
+            adr_complement,
             adr_user_id
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+
+        ON CONFLICT (adr_user_id) DO UPDATE
+        SET adr_street = $1, 
+            adr_neighbourhood = $2, 
+            adr_state = $3,
+            adr_city = $4, 
+            adr_zipcode = $6, 
+            adr_house_number = $7,
+            adr_complement = $8
+
         RETURNING *
       `,
       [
@@ -28,6 +39,7 @@ export default class AddressRepositoryPg implements IAddressRepository {
         address.getCountry(),
         address.getzipCode(),
         address.getHouseNumber(),
+        address.getComplement(),
         address.getUserId(),
       ]
     );

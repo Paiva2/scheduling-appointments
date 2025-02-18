@@ -31,12 +31,17 @@
 import { actionTypes } from "@/lib/store/types/actionTypes";
 import EmptyFallback from "@/components/empty-fallback/EmptyFallback";
 import DoctorCard from "./components/doctor-card/DoctorCard.vue";
+import { useToast } from "vue-toastification";
 
 export default {
   name: "DoctorsListView",
   components: {
     EmptyFallback,
     DoctorCard,
+  },
+  setup() {
+    const toast = useToast();
+    return { toast };
   },
   data() {
     return {
@@ -73,7 +78,7 @@ export default {
         this.page = paginableData.page;
         this.totalPages = paginableData.totalPages;
       } catch (e) {
-        console.log(e);
+        this.toast.error("Error while getting list...");
       } finally {
         this.loading = false;
       }

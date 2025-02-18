@@ -4,7 +4,7 @@ import { IUsecase } from "../../../core/interfaces/adapter/IUsecase";
 import GetProfileUsecase from "../../../core/usecase/user/getProfile/getProfileUsecase";
 import { IGetProfileInput } from "../../../core/usecase/user/getProfile/dto/getProfileInput";
 import { IGetProfileOutput } from "../../../core/usecase/user/getProfile/dto/getProfileOutput";
-import UserSpecialismRepository from "../../../infra/persistence/repository/UserSpecialismRepository";
+import UserSpecialismRepository from "../../../infra/persistence/repository/UserSpecialismRepositoryPg";
 
 export default class GetProfileFactory {
   constructor() {}

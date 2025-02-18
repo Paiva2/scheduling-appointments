@@ -182,7 +182,7 @@ export default {
       loadingRegister: false,
       labels: ["Personal info", "Address"],
       roles: ["Pacient", "Doctor"],
-      specialisms: [],
+      specialismsList: [],
       formFields: {
         name: "",
         email: "",

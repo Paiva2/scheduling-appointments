@@ -1,3 +1,3 @@
 export interface IUsecase<I, O> {
-  execute(input: I): Promise<O>;
+  execute(input: I, ...args: any): Promise<O>;
 }

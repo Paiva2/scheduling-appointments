@@ -6,4 +6,6 @@ export interface IUserSpecialismRepository {
   getUserSpecialisms(id: string): Promise<UserSpecialismEntity[]>;
 
   persistAll(userSpecialismsEntity: UserSpecialismEntity[]);
+
+  removeAllByUser(userId: string): Promise<void>;
 }

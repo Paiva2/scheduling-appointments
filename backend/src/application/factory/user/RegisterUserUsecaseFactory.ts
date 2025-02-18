@@ -8,7 +8,7 @@ import RegisterUserUsecase from "../../../core/usecase/user/registerUser/registe
 import AddressRepositoryPg from "../../../infra/persistence/repository/AddressRepositoryPg";
 import UserRoleRepositoryPg from "../../../infra/persistence/repository/UserRoleRepositoryPg";
 import SpecialismRepositoryPg from "../../../infra/persistence/repository/SpecialismRepositoryPg";
-import UserSpecialismRepository from "../../../infra/persistence/repository/UserSpecialismRepository";
+import UserSpecialismRepository from "../../../infra/persistence/repository/UserSpecialismRepositoryPg";
 
 export default class RegisterUserUsecaseFactory {
   constructor() {}

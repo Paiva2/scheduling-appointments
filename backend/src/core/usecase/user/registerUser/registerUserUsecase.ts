@@ -1,4 +1,4 @@
-import UserAlreadyExistsException from "./exception/userAlreadyExistsException";
+import UserAlreadyExistsException from "../../common/exception/userAlreadyExistsException";
 import { IUsecase } from "../../../interfaces/adapter/IUsecase";
 import { IDatabaseUtils } from "../../../interfaces/utils/IDatabaseUtils";
 import { IPasswordUtils } from "../../../interfaces/utils/IPasswordUtils";
@@ -21,7 +21,6 @@ import {
   ISpecialismRepository,
   IUserSpecialismRepository,
 } from "../../../interfaces/repository/index";
-import { EnumSpecialism } from "../../../enum/EnumSpecialism";
 
 export default class RegisterUserUsecase implements IUsecase<IRegisterUserInput, void> {
   private EMAIL_REGEX =

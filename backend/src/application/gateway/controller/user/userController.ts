@@ -16,6 +16,8 @@ import AuthUserFactory from "../../../factory/user/authUserFactory";
 import GetProfileFactory from "../../../factory/user/getProfileFactory";
 import ForgotPasswordFactory from "../../../factory/user/forgotPasswordFactory";
 import ListDoctorsFactory from "../../../factory/user/listDoctorsFactory";
+import { IUpdateProfileInput } from "../../../../core/usecase/user/updateProfile/dto/UpdateProfileInput";
+import UpdateProfileFactory from "../../../factory/user/updateProfileFactory";
 
 export default class UserController {
   private readonly registerUserUsecase: IUsecase<IRegisterUserInput, void>;
@@ -23,6 +25,7 @@ export default class UserController {
   private readonly getProfileUsecase: IUsecase<IGetProfileInput, IGetProfileOutput>;
   private readonly forgotPasswordUsecase: IUsecase<IForgotPasswordInput, void>;
   private readonly listDoctorsUsecase: IUsecase<IListDoctorsInput, IPageableList<IListDoctorsOutput>>;
+  private readonly updateProfileUsecase: IUsecase<IUpdateProfileInput, void>;
 
   private readonly tokenConfig: ITokenConfig;
 
@@ -32,6 +35,7 @@ export default class UserController {
     this.getProfileUsecase = GetProfileFactory.create();
     this.forgotPasswordUsecase = ForgotPasswordFactory.create();
     this.listDoctorsUsecase = ListDoctorsFactory.create();
+    this.updateProfileUsecase = UpdateProfileFactory.create();
 
     this.tokenConfig = new TokenConfig();
   }
@@ -80,5 +84,22 @@ export default class UserController {
     });
 
     return res.status(200).send(output);
+  }
+
+  public async updateProfile(req: Request, res: Response, _next: NextFunction) {
+    const subject = req.headers["authentication-principal"] as string;
+
+    await this.updateProfileUsecase.execute(
+      {
+        email: req.body.email,
+        password: req.body.password,
+        name: req.body.name,
+        address: req.body.address,
+        specialisms: req.body.specialisms,
+      },
+      subject
+    );
+
+    return res.status(200).send();
   }
 }

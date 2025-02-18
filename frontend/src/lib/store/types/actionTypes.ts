@@ -3,6 +3,7 @@ export const actionTypes = {
     LOGIN: "login",
     REGISTER: "register",
     PROFILE: "profile",
+    UPDATE_PROFILE: "updateProfile",
     FORGOT_PASSWORD: "forgotPassword",
   },
   LIST: {

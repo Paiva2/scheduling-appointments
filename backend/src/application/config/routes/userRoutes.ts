@@ -6,6 +6,7 @@ import { authUserInput } from "../../../core/usecase/user/authUser/dto/authUserI
 import { forgotPasswordInput } from "../../../core/usecase/user/forgotPassword/dto/forgotPasswordInput";
 import UserController from "../../gateway/controller/user/userController";
 import authValidator from "../../middleware/authValidator";
+import { updateProfileInput } from "../../../core/usecase/user/updateProfile/dto/UpdateProfileInput";
 
 export default function userRoutes(app: Express) {
   const userController = new UserController();
@@ -38,5 +39,11 @@ export default function userRoutes(app: Express) {
     `${apiVersionPrefix}/user/list/doctors`,
     [authValidator(["*"])],
     (req: Request, res: Response, next: NextFunction) => userController.listDoctors(req, res, next)
+  );
+
+  app.put(
+    `${apiVersionPrefix}/user/profile/update`,
+    [authValidator(["*"]), inputHandler(updateProfileInput)],
+    (req: Request, res: Response, next: NextFunction) => userController.updateProfile(req, res, next)
   );
 }
