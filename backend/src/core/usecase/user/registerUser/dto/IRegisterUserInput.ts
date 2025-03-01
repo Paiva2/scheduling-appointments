@@ -27,7 +27,7 @@ export const registerUserInput = z.object({
   name: z.string().nonempty(),
   password: z.string().nonempty(),
   role: z.enum([EnumRole.USER, EnumRole.DOCTOR]),
-  specialismListId: z.array(z.string().uuid()).nonempty(),
+  specialismListId: z.array(z.string().uuid()),
   address: z.object({
     street: z.string().nonempty(),
     neighbourhood: z.string().nonempty(),

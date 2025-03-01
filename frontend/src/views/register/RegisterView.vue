@@ -309,7 +309,7 @@ export default {
           email: this.formFields.email,
           password: this.formFields.password,
           name: this.formFields.name,
-          role: this.formFields.role.toUpperCase(),
+          role: this.formFields.role.toUpperCase() === "PACIENT" ? "USER" : "DOCTOR",
           specialismListId: this.formFields.specialismList,
           address: {
             street: this.formFields.address.street,

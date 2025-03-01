@@ -412,7 +412,7 @@ export default {
         email: this.user.email,
         password: "",
         confirmPassword: "",
-        specialisms: this.user.specialisms.map((specialism) => specialism.id) ?? [],
+        specialisms: this.user.specialisms?.map((specialism) => specialism.id) ?? [],
         address: {
           street: this.user.address.street,
           neighbourhood: this.user.address.neighbourhood,
