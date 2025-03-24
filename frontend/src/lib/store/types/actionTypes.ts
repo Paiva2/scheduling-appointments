@@ -14,4 +14,7 @@ export const actionTypes = {
   },
   GET_STATES: "getStates",
   GET_ZIPCODE_INFOS: "getZipcodeInfos",
+  SCHEDULING: {
+    CREATE: "createScheduling",
+  },
 };

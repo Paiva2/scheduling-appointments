@@ -11,6 +11,7 @@
 import { mapState } from "vuex";
 import { actionTypes } from "@/lib/store/types/actionTypes";
 import AsideMenu from "@/components/aside-menu/AsideMenu.vue";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 export default {
   components: { AsideMenu },

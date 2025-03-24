@@ -31,7 +31,13 @@ const actions = {
     return data;
   },
 
-  async [actionTypes.USER.PROFILE]({ commit, state }: { commit: Commit; state: IState }) {
+  async [actionTypes.USER.PROFILE]({
+    commit,
+    state,
+  }: {
+    commit: Commit;
+    state: IState;
+  }) {
     const { data } = await api.get("/user/profile", {
       headers: {
         Authorization: `Bearer ${state.authToken}`,
@@ -42,7 +48,10 @@ const actions = {
     return data;
   },
 
-  async [actionTypes.USER.UPDATE_PROFILE]({ commit, state }: { commit: Commit; state: IState }, payload) {
+  async [actionTypes.USER.UPDATE_PROFILE](
+    { commit, state }: { commit: Commit; state: IState },
+    payload
+  ) {
     const { data } = await api.put("/user/profile/update", payload, {
       headers: {
         Authorization: `Bearer ${state.authToken}`,
@@ -70,13 +79,23 @@ const actions = {
   },
 
   async [actionTypes.GET_STATES]({ commit, state }, payload) {
-    const { data } = await api.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${payload}/municipios`);
+    const { data } = await api.get(
+      `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${payload}/municipios`
+    );
     return data;
   },
 
   async [actionTypes.GET_ZIPCODE_INFOS]({ commit, state }, payload) {
     const { data } = await api.get(`https://viacep.com.br/ws/${payload}/json/`);
     return data;
+  },
+
+  async [actionTypes.SCHEDULING.CREATE]({ commit, state }, payload) {
+    await api.post("/schedulings/new", payload, {
+      headers: {
+        Authorization: `Bearer ${state.authToken}`,
+      },
+    });
   },
 };
 

@@ -18,7 +18,10 @@
               :key="specialism.id"
             >
               <span v-if="showMoreSpecialism ? showMoreSpecialism : index < 1">
-                {{ specialism.name.toLowerCase() + showComma(index, doctor.specialismList.length - 1) }}
+                {{
+                  specialism.name.toLowerCase() +
+                  showComma(index, doctor.specialismList.length - 1)
+                }}
               </span>
             </v-card-text>
 
@@ -33,23 +36,46 @@
         </div>
       </div>
 
-      <v-btn color="blue-darken-3" height="40" tile flat prepend-icon="mdi-calendar-arrow-right"> Schedule </v-btn>
+      <v-btn
+        @click="openSchedule"
+        color="blue-darken-3"
+        height="40"
+        tile
+        flat
+        prepend-icon="mdi-calendar-arrow-right"
+      >
+        Schedule
+      </v-btn>
     </div>
     <v-divider></v-divider>
     <div class="d-flex ga-1 pt-5 align-baseline address-wrapper">
       <v-icon>mdi-map-marker-radius-outline</v-icon>
-      <v-card-text prepend-icon="mdi-magnify" class="pa-0 address-card text-capitalize">
+      <v-card-text
+        prepend-icon="mdi-magnify"
+        class="pa-0 address-card text-capitalize"
+      >
         {{ mountAddress(doctor.address) }}
         <br />
         {{ doctor.address.complement }}
       </v-card-text>
     </div>
+
+    <schedule-date-picker
+      :key="dialogDatePicker.open"
+      :dialog="dialogDatePicker"
+      :doctorId="doctor.id"
+    />
   </v-card>
 </template>
 
 <script>
+import ScheduleDatePicker from "./components/ScheduleDatePicker";
+
 export default {
   name: "DoctorCard",
+  components: {
+    ScheduleDatePicker,
+  },
   props: {
     doctor: {
       type: Object,
@@ -59,6 +85,9 @@ export default {
   data() {
     return {
       showMoreSpecialism: false,
+      dialogDatePicker: {
+        open: false,
+      },
     };
   },
   methods: {
@@ -71,6 +100,9 @@ export default {
     },
     mountAddress(address) {
       return `${address.street}, ${address.houseNumber}, ${address.neighbourhood}, ${address.zipCode}, ${address.city} - ${address.state}`;
+    },
+    openSchedule() {
+      this.dialogDatePicker.open = true;
     },
   },
 };
