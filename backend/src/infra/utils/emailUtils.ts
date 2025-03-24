@@ -3,7 +3,11 @@ import { IEmailUtils } from "../../core/interfaces/utils/IEmailUtils";
 
 //@ts-ignore
 export default class EmailUtils implements IEmailUtils {
-  public static sendSimpleMail(to: string, title: string, message: string): void {
+  public static sendSimpleMail(
+    to: string,
+    title: string,
+    message: string
+  ): void {
     const mailOptions = {
       to: to,
       subject: title,
@@ -14,7 +18,7 @@ export default class EmailUtils implements IEmailUtils {
       if (err) {
         console.error(err);
       } else {
-        console.info("E-mail sent to recover password!");
+        console.info("E-mail sent!");
       }
     });
   }

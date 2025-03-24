@@ -4,67 +4,79 @@ export default async function dbInit() {
   try {
     await pool.query(`
           CREATE TABLE IF NOT EXISTS tb_users (
-            usr_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            usr_name varchar(50) NOT NULL,
-            usr_email varchar(100) NOT NULL UNIQUE,
-            usr_password varchar(250) NOT NULL,
-            usr_created_at timestamp NOT NULL DEFAULT NOW()
+            usr_id uuid default gen_random_uuid() primary key,
+            usr_name varchar(50) not null,
+            usr_email varchar(100) not null unique,
+            usr_password varchar(250) not null,
+            usr_created_at timestamp not null default now()
           );
 
           CREATE TABLE IF NOT EXISTS tb_address (
-            adr_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            adr_street varchar(50) NOT NULL,
-            adr_neighbourhood varchar(50) NOT NULL,
-            adr_state varchar(20) NOT NULL,
-            adr_city varchar(20) NOT NULL,
-            adr_country varchar(20) NOT NULL,
-            adr_zipcode varchar(20) NOT NULL,
-            adr_house_number varchar(10) NOT NULL,
+            adr_id uuid default gen_random_uuid() primary key,
+            adr_street varchar(50) not null,
+            adr_neighbourhood varchar(50) not null,
+            adr_state varchar(20) not null,
+            adr_city varchar(20) not null,
+            adr_country varchar(20) not null,
+            adr_zipcode varchar(20) not null,
+            adr_house_number varchar(10) not null,
             adr_complement varchar(100),
-            adr_user_id UUID UNIQUE NOT NULL REFERENCES tb_users(usr_id) ON DELETE CASCADE,
-            adr_created_at timestamp NOT NULL DEFAULT NOW()
+            adr_user_id UUID unique not null references tb_users(usr_id) on delete cascade,
+            adr_created_at timestamp not null default now()
           );
 
           CREATE TABLE IF NOT EXISTS tb_roles (
-            rl_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            rl_name varchar(15) NOT NULL UNIQUE,
-            rl_created_at timestamp NOT NULL DEFAULT NOW()
+            rl_id uuid default gen_random_uuid() primary key,
+            rl_name varchar(15) not null unique,
+            rl_created_at timestamp not null default now()
           );
 
           CREATE TABLE IF NOT EXISTS tb_specialisms (
-            spe_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-            spe_name varchar(20) NOT NULL UNIQUE,
-            spe_created_at timestamp NOT NULL DEFAULT NOW()
+            spe_id uuid default gen_random_uuid() primary key,
+            spe_name varchar(20) not null unique,
+            spe_created_at timestamp not null default now()
           );
 
           CREATE TABLE IF NOT EXISTS tb_users_roles (
-            usl_user_id UUID NOT NULL REFERENCES tb_users(usr_id) ON DELETE CASCADE,
-            usl_role_id UUID NOT NULL REFERENCES tb_roles(rl_id) ON DELETE CASCADE,
-            usl_created_at timestamp NOT NULL DEFAULT NOW(),
-            CONSTRAINT pk_users_roles PRIMARY KEY (usl_user_id, usl_role_id)
+            usl_user_id UUID not null references tb_users(usr_id) on delete cascade,
+            usl_role_id UUID not null references tb_roles(rl_id) on delete cascade,
+            usl_created_at timestamp not null default now(),
+            CONSTRAINT pk_users_roles primary key (usl_user_id, usl_role_id)
           );
 
           CREATE TABLE IF NOT EXISTS tb_users_specialisms (
-            usp_user_id UUID NOT NULL REFERENCES tb_users(usr_id) ON DELETE CASCADE,
-            usp_spe_id UUID NOT NULL REFERENCES tb_specialisms(spe_id) ON DELETE CASCADE,
-            usp_created_at timestamp NOT NULL DEFAULT NOW(),
-            CONSTRAINT pk_users_specialisms PRIMARY KEY (usp_user_id, usp_spe_id)
+            usp_user_id UUID not null references tb_users(usr_id) on delete cascade,
+            usp_spe_id UUID not null references tb_specialisms(spe_id) on delete cascade,
+            usp_created_at timestamp not null default now(),
+            CONSTRAINT pk_users_specialisms primary key (usp_user_id, usp_spe_id)
+          );
+
+          CREATE TABLE IF NOT EXISTS tb_schedulings (
+            sch_id uuid default gen_random_uuid() primary key,
+            sch_user_id UUID not null references tb_users(usr_id) on delete cascade,
+            sch_user_doctor_id UUID not null references tb_users(usr_id) on delete cascade,
+            sch_informations varchar(500) default null,
+            sch_active boolean not null default true,
+            sch_scheduled_at timestamp not null,
+            sch_finished_at timestamp,
+            sch_created_at timestamp not null default now(),
+            sch_updated_at timestamp not null default now()
           );
 
           INSERT INTO tb_roles (rl_name)
-          VALUES('USER'),
+          values('USER'),
                 ('DOCTOR'),
                 ('ADMIN')
-          ON CONFLICT DO NOTHING;
+          on conflict do nothing;
 
           INSERT INTO tb_specialisms (spe_name)
-          VALUES('CARDIOLOGY'),
+          values('CARDIOLOGY'),
                 ('NEUROLOGY'),
                 ('CARDIOLOGY'),
                 ('DERMATOLOGY'),
                 ('PEDIATRICS'),
                 ('ORTHOPEDICS') 
-          ON CONFLICT DO NOTHING;
+          on conflict do nothing;
       `);
   } catch (e) {
     console.error(e);

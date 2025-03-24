@@ -21,6 +21,7 @@
     "express-async-errors": "^3.1.1",
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.48",
     "nodemailer": "^6.10.0",
     "pg": "^8.13.1",
     "zod": "^3.24.1",

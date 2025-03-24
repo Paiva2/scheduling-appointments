@@ -4,6 +4,7 @@ import UserEntity from "./UserEntity";
 import UserRoleEntity from "./UserRoleEntity";
 import SpecialismEntity from "./SpecialismEntity";
 import UserSpecialismEntity from "./UserEspecialismEntity";
+import SchedulingEntity from "./SchedulingEntity";
 
 export {
   UserEntity,
@@ -12,4 +13,5 @@ export {
   UserRoleEntity,
   SpecialismEntity,
   UserSpecialismEntity,
+  SchedulingEntity,
 };

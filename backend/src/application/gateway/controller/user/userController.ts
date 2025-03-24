@@ -11,20 +11,26 @@ import { IListDoctorsInput } from "../../../../core/usecase/user/listDoctors/dto
 import { IListDoctorsOutput } from "../../../../core/usecase/user/listDoctors/dto/listDoctorsOutput";
 import { IPageableList } from "../../../../core/interfaces/utils/IPageableList";
 import TokenConfig from "../../../config/jwt/tokenConfig";
-import RegisterUserUsecaseFactory from "../../../factory/user/registerUserUsecaseFactory";
 import AuthUserFactory from "../../../factory/user/authUserFactory";
 import GetProfileFactory from "../../../factory/user/getProfileFactory";
 import ForgotPasswordFactory from "../../../factory/user/forgotPasswordFactory";
 import ListDoctorsFactory from "../../../factory/user/listDoctorsFactory";
 import { IUpdateProfileInput } from "../../../../core/usecase/user/updateProfile/dto/UpdateProfileInput";
 import UpdateProfileFactory from "../../../factory/user/updateProfileFactory";
+import RegisterUserUsecaseFactory from "../../../factory/user/RegisterUserUsecaseFactory";
 
 export default class UserController {
   private readonly registerUserUsecase: IUsecase<IRegisterUserInput, void>;
   private readonly authUserUsecase: IUsecase<IAuthUserInput, IAuthUserOutput>;
-  private readonly getProfileUsecase: IUsecase<IGetProfileInput, IGetProfileOutput>;
+  private readonly getProfileUsecase: IUsecase<
+    IGetProfileInput,
+    IGetProfileOutput
+  >;
   private readonly forgotPasswordUsecase: IUsecase<IForgotPasswordInput, void>;
-  private readonly listDoctorsUsecase: IUsecase<IListDoctorsInput, IPageableList<IListDoctorsOutput>>;
+  private readonly listDoctorsUsecase: IUsecase<
+    IListDoctorsInput,
+    IPageableList<IListDoctorsOutput>
+  >;
   private readonly updateProfileUsecase: IUsecase<IUpdateProfileInput, void>;
 
   private readonly tokenConfig: ITokenConfig;
@@ -69,7 +75,11 @@ export default class UserController {
     return res.status(200).send(output);
   }
 
-  public async forgotPassword(req: Request, res: Response, _next: NextFunction) {
+  public async forgotPassword(
+    req: Request,
+    res: Response,
+    _next: NextFunction
+  ) {
     await this.forgotPasswordUsecase.execute({ email: req.body.email });
 
     return res.status(200).send();
