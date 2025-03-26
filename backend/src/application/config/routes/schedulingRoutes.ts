@@ -11,7 +11,20 @@ export default function schedulingRoutes(app: Express) {
   app.post(
     `${apiVersionPrefix}/schedulings/new`,
     [inputHandler(createScheduleInput), authValidator(["*"])],
+    (req: Request, res: Response, next: NextFunction) => schedulingController.createScheduling(req, res, next)
+  );
+
+  app.get(
+    `${apiVersionPrefix}/schedulings/pacient/list`,
+    [authValidator(["USER", "ADMIN"])],
     (req: Request, res: Response, next: NextFunction) =>
-      schedulingController.createScheduling(req, res, next)
+      schedulingController.listUserSchedulings(req, res, next)
+  );
+
+  app.get(
+    `${apiVersionPrefix}/schedulings/doctor/list`,
+    [authValidator(["DOCTOR", "ADMIN"])],
+    (req: Request, res: Response, next: NextFunction) =>
+      schedulingController.listDoctorSchedulings(req, res, next)
   );
 }

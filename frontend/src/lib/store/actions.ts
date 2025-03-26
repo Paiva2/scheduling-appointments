@@ -31,13 +31,7 @@ const actions = {
     return data;
   },
 
-  async [actionTypes.USER.PROFILE]({
-    commit,
-    state,
-  }: {
-    commit: Commit;
-    state: IState;
-  }) {
+  async [actionTypes.USER.PROFILE]({ commit, state }: { commit: Commit; state: IState }) {
     const { data } = await api.get("/user/profile", {
       headers: {
         Authorization: `Bearer ${state.authToken}`,
@@ -48,10 +42,7 @@ const actions = {
     return data;
   },
 
-  async [actionTypes.USER.UPDATE_PROFILE](
-    { commit, state }: { commit: Commit; state: IState },
-    payload
-  ) {
+  async [actionTypes.USER.UPDATE_PROFILE]({ commit, state }: { commit: Commit; state: IState }, payload) {
     const { data } = await api.put("/user/profile/update", payload, {
       headers: {
         Authorization: `Bearer ${state.authToken}`,
@@ -96,6 +87,46 @@ const actions = {
         Authorization: `Bearer ${state.authToken}`,
       },
     });
+  },
+
+  async [actionTypes.SCHEDULING.GET_USER_SCHEDLINGS]({ commit, state }, payload) {
+    let url = "/schedulings/pacient/list";
+
+    if (payload.page) {
+      url += `?page=${payload.page}`;
+    }
+
+    if (payload.size) {
+      url += `&size=${payload.size}`;
+    }
+
+    const { data } = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${state.authToken}`,
+      },
+    });
+
+    return data;
+  },
+
+  async [actionTypes.SCHEDULING.GET_DOCTOR_SCHEDLINGS]({ commit, state }, payload) {
+    let url = "/schedulings/doctor/list";
+
+    if (payload.page) {
+      url += `?page=${payload.page}`;
+    }
+
+    if (payload.size) {
+      url += `&size=${payload.size}`;
+    }
+
+    const { data } = await api.get(url, {
+      headers: {
+        Authorization: `Bearer ${state.authToken}`,
+      },
+    });
+
+    return data;
   },
 };
 

@@ -18,10 +18,7 @@
               :key="specialism.id"
             >
               <span v-if="showMoreSpecialism ? showMoreSpecialism : index < 1">
-                {{
-                  specialism.name.toLowerCase() +
-                  showComma(index, doctor.specialismList.length - 1)
-                }}
+                {{ specialism.name.toLowerCase() + showComma(index, doctor.specialismList.length - 1) }}
               </span>
             </v-card-text>
 
@@ -43,6 +40,7 @@
         tile
         flat
         prepend-icon="mdi-calendar-arrow-right"
+        v-if="!isDoctor"
       >
         Schedule
       </v-btn>
@@ -50,31 +48,28 @@
     <v-divider></v-divider>
     <div class="d-flex ga-1 pt-5 align-baseline address-wrapper">
       <v-icon>mdi-map-marker-radius-outline</v-icon>
-      <v-card-text
-        prepend-icon="mdi-magnify"
-        class="pa-0 address-card text-capitalize"
-      >
+      <v-card-text prepend-icon="mdi-magnify" class="pa-0 address-card text-capitalize">
         {{ mountAddress(doctor.address) }}
         <br />
         {{ doctor.address.complement }}
       </v-card-text>
     </div>
 
-    <schedule-date-picker
-      :key="dialogDatePicker.open"
-      :dialog="dialogDatePicker"
-      :doctorId="doctor.id"
-    />
+    <schedule-date-picker :key="dialogDatePicker.open" :dialog="dialogDatePicker" :doctorId="doctor.id" />
   </v-card>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import ScheduleDatePicker from "./components/ScheduleDatePicker";
 
 export default {
   name: "DoctorCard",
   components: {
     ScheduleDatePicker,
+  },
+  computed: {
+    ...mapGetters(["isDoctor"]),
   },
   props: {
     doctor: {

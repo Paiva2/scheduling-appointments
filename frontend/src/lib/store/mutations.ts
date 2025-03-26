@@ -9,10 +9,6 @@ const mutations = {
   [mutationTypes.USER.SET_PROFILE](state: IState, payload) {
     state.user = payload;
   },
-
-  [mutationTypes.USER.SET_PROFILE](state: IState, payload) {
-    state.user = payload;
-  },
 };
 
 export default mutations;

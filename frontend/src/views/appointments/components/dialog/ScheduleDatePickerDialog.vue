@@ -33,7 +33,7 @@
       </template>
     </Datepicker>
 
-    <v-container class="text-area-wapper-doctors-list" fluid v-if="showInformations">
+    <div class="text-area-wrapper" fluid v-if="showInformations">
       <v-textarea
         v-model="informations"
         :rules="rulesInformation"
@@ -45,8 +45,8 @@
         tile
         no-resize
       />
-      <v-btn color="primary" class="mt-5" flat tile @click="scheduleDate">Confirm</v-btn>
-    </v-container>
+      <v-btn class="mt-2" color="blue-darken-3" flat tile @click="scheduleDate">Confirm</v-btn>
+    </div>
   </v-dialog>
 </template>
 
@@ -57,11 +57,15 @@ import { actionTypes } from "@/lib/store/types/actionTypes";
 import { AxiosError } from "axios";
 
 export default {
-  name: "ScheduleDatePicker",
+  name: "ScheduleDatePickerDialog",
   components: {
     Datepicker,
   },
   props: {
+    scheduled: {
+      type: Object,
+      required: true,
+    },
     dialog: {
       type: Object,
       required: true,
@@ -111,10 +115,10 @@ export default {
     async scheduleDate() {
       this.loading = true;
       try {
-        await this.$store.dispatch(actionTypes.SCHEDULING.CREATE, {
+        await this.$store.dispatch(actionTypes.SCHEDULING.RESCHEDULE, {
+          scheduledId: this.scheduled.id,
           userDoctorId: this.doctorId,
           scheduleDate: this.dateSelected,
-          informations: this.informations,
         });
 
         this.toast.success("Date scheduled!");
@@ -152,11 +156,7 @@ export default {
   flex: 1;
 }
 
-.text-area-wapper-doctors-list {
-  background-color: white;
-}
-
-.text-area-wapper-doctors-list .v-input .v-input__details {
-  padding: 0 !important;
+.text-area-wrapper {
+  background-color: #fff;
 }
 </style>

@@ -17,7 +17,7 @@ export default {
   components: { AsideMenu },
   name: "App",
   computed: {
-    ...mapState(["authToken"]),
+    ...mapState(["authToken", "getAuthToken"]),
   },
   watch: {
     async authToken(val) {

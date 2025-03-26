@@ -7,6 +7,8 @@ import ForgotPasswordView from "@/views/forgot-password/ForgotPasswordView.vue";
 import HomeView from "@/views/home/HomeView.vue";
 import Cookies from "js-cookie";
 import DoctorsListView from "@/views/doctors-list/DoctorsListView.vue";
+import AppointmentsView from "../views/appointments/AppointmentsView.vue";
+import { actionTypes } from "../lib/store/types/actionTypes";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -53,6 +55,11 @@ const router = createRouter({
         next();
       },
     },
+    {
+      path: "/appointments",
+      name: "appointments",
+      component: AppointmentsView,
+    },
   ],
 });
 
@@ -82,6 +89,7 @@ router.beforeEach(async (to, from, next) => {
       const tokenFilled = authTokenFilled ?? authTokenCookies;
 
       store.commit(mutationTypes.USER.SET_AUTH, tokenFilled);
+      await store.dispatch(actionTypes.USER.PROFILE);
       next();
     } catch {
       Cookies.remove("scheduling-appointments-app");
