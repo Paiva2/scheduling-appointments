@@ -20,6 +20,7 @@
             :scheduled="item"
             :key="item.pacient.id"
             :pacient="item.pacient"
+            @update-list="refetchList"
           />
 
           <appointment-card-doctor
@@ -28,6 +29,7 @@
             :scheduled="item"
             :key="item.doctor?.id"
             :doctor="item.doctor"
+            @update-list="refetchList"
           />
         </template>
 
@@ -104,6 +106,10 @@ export default {
       } finally {
         this.loading = false;
       }
+    },
+    async refetchList() {
+      this.page = 1;
+      await this.getSchedulings();
     },
   },
 };

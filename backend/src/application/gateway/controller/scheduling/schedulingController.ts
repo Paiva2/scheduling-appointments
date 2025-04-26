@@ -9,6 +9,10 @@ import { IPageableList } from "../../../../core/interfaces/utils/IPageableList";
 import { IListDoctorSchedulingInput } from "../../../../core/usecase/schedulings/listDoctorSchedulings/dto/listDoctorSchedulingsInput";
 import { IListDoctorSchedulingOutput } from "../../../../core/usecase/schedulings/listDoctorSchedulings/dto/listDoctorSchedulingOutput";
 import ListDoctorSchedulingFactory from "../../../factory/scheduling/listDoctorSchedulingFactory copy";
+import { ICancelScheduleAsPacientInput } from "../../../../core/usecase/schedulings/cancelScheduleAsPacient/dto/cancelScheduleAsPacientInput";
+import CancelScheduleAsPacientFactory from "../../../factory/scheduling/cancelScheduleAsPacientFactory";
+import { ICancelScheduleAsDoctorInput } from "../../../../core/usecase/schedulings/cancelScheduleAsDoctor/dto/cancelScheduleAsDoctorInput";
+import CancelScheduleAsDoctorFactory from "../../../factory/scheduling/cancelScheduleAsDoctorFactory";
 
 export default class SchedulingController {
   private readonly createSchedulingUsecase: IUsecase<ICreateScheduleInput, void>;
@@ -20,11 +24,15 @@ export default class SchedulingController {
     IListDoctorSchedulingInput,
     IPageableList<IListDoctorSchedulingOutput>
   >;
+  private readonly cancelSchedulingAsPacientUsecase: IUsecase<ICancelScheduleAsPacientInput, void>;
+  private readonly cancelSchedulingAsDoctorUsecase: IUsecase<ICancelScheduleAsDoctorInput, void>;
 
   constructor() {
     this.createSchedulingUsecase = CreateScheduleFactory.create();
     this.listUserSchedulingUsecase = ListUserSchedulingFactory.create();
     this.listDoctorSchedulingUsecase = ListDoctorSchedulingFactory.create();
+    this.cancelSchedulingAsPacientUsecase = CancelScheduleAsPacientFactory.create();
+    this.cancelSchedulingAsDoctorUsecase = CancelScheduleAsDoctorFactory.create();
   }
 
   public async createScheduling(req: Request, res: Response, _next: NextFunction) {
@@ -62,5 +70,29 @@ export default class SchedulingController {
     });
 
     return res.status(200).send(output);
+  }
+
+  public async cancelSchedulingAsPacient(req: Request, res: Response, _next: NextFunction) {
+    const subject = req.headers["authentication-principal"] as string;
+    const schedulingId = req.params.schedulingId;
+
+    await this.cancelSchedulingAsPacientUsecase.execute({
+      id: schedulingId,
+      userId: subject,
+    });
+
+    return res.status(200).send();
+  }
+
+  public async cancelSchedulingAsDoctor(req: Request, res: Response, _next: NextFunction) {
+    const subject = req.headers["authentication-principal"] as string;
+    const schedulingId = req.params.schedulingId;
+
+    await this.cancelSchedulingAsDoctorUsecase.execute({
+      id: schedulingId,
+      doctorId: subject,
+    });
+
+    return res.status(200).send();
   }
 }

@@ -128,6 +128,19 @@ const actions = {
 
     return data;
   },
+
+  async [actionTypes.SCHEDULING.CANCEL_SCHEDULING]({ commit, state }, payload) {
+    const cancelType = payload.isDoctor ? "doctor" : "pacient";
+    let url = `/schedulings/${cancelType}/cancel/` + payload.schedulingId;
+
+    const { data } = await api.delete(url, {
+      headers: {
+        Authorization: `Bearer ${state.authToken}`,
+      },
+    });
+
+    return data;
+  },
 };
 
 export default actions;

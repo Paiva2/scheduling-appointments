@@ -4,6 +4,7 @@ import RoleNotFoundException from "./roleNotFoundException";
 import AddressNotFoundException from "./addressNotFoundException";
 import SpecialismNotFoundException from "./specialismNotFoundException";
 import UserAlreadyExistsException from "./userAlreadyExistsException";
+import SchedulingNotFoundException from "./schedulingNotFoundException";
 
 export {
   InvalidFieldException,
@@ -12,4 +13,5 @@ export {
   AddressNotFoundException,
   SpecialismNotFoundException,
   UserAlreadyExistsException,
+  SchedulingNotFoundException,
 };

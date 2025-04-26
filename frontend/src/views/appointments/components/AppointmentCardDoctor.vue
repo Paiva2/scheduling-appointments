@@ -110,9 +110,16 @@
 
 <script>
 import ScheduleDatePickerDialog from "./dialog/ScheduleDatePickerDialog.vue";
+import { actionTypes } from "@/lib/store/types/actionTypes";
+import { useToast } from "vue-toastification";
+import { AxiosError } from "axios";
 
 export default {
   name: "AppointmentCardDoctor",
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   components: {
     ScheduleDatePickerDialog,
   },
@@ -143,7 +150,21 @@ export default {
     openReschedule() {
       this.dialogDatePicker.open = true;
     },
-    cancelSchedule() {},
+    async cancelSchedule(id) {
+      try {
+        await this.$store.dispatch(actionTypes.SCHEDULING.CANCEL_SCHEDULING, {
+          isDoctor: false,
+          schedulingId: this.scheduled.id,
+        });
+        this.$emit("update-list");
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          this.toast.error(e.response.data.message);
+        } else {
+          this.toast.error("Error while trying to cancel scheduling...");
+        }
+      }
+    },
     showMoreSpecialisms() {
       this.showMoreSpecialism = true;
     },

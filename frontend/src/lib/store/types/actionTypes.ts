@@ -18,5 +18,6 @@ export const actionTypes = {
     CREATE: "createScheduling",
     GET_USER_SCHEDLINGS: "getUserSchedulings",
     GET_DOCTOR_SCHEDLINGS: "getDoctorSchedulings",
+    CANCEL_SCHEDULING: "cancelScheduling",
   },
 };

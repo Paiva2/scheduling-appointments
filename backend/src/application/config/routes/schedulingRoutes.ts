@@ -27,4 +27,18 @@ export default function schedulingRoutes(app: Express) {
     (req: Request, res: Response, next: NextFunction) =>
       schedulingController.listDoctorSchedulings(req, res, next)
   );
+
+  app.delete(
+    `${apiVersionPrefix}/schedulings/pacient/cancel/:schedulingId`,
+    [authValidator(["USER", "ADMIN"])],
+    (req: Request, res: Response, next: NextFunction) =>
+      schedulingController.cancelSchedulingAsPacient(req, res, next)
+  );
+
+  app.delete(
+    `${apiVersionPrefix}/schedulings/doctor/cancel/:schedulingId`,
+    [authValidator(["DOCTOR", "ADMIN"])],
+    (req: Request, res: Response, next: NextFunction) =>
+      schedulingController.cancelSchedulingAsDoctor(req, res, next)
+  );
 }

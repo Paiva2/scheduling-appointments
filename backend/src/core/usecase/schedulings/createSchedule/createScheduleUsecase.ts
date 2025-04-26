@@ -9,10 +9,8 @@ import { IQueueRepository } from "../../../interfaces/adapter/IQueueRepository";
 import { ICreateScheduleInput } from "./dto/createScheduleInput";
 import moment from "moment-timezone";
 
-export class CreateScheduleUsecase
-  implements IUsecase<ICreateScheduleInput, void>
-{
-  private readonly SCHEDULINGS_URL = "http://localhost:5173/schedulings";
+export class CreateScheduleUsecase implements IUsecase<ICreateScheduleInput, void> {
+  private readonly SCHEDULINGS_URL = "http://localhost:5173/appointments";
 
   constructor(
     private readonly userRepository: IUserRepository,
@@ -22,9 +20,7 @@ export class CreateScheduleUsecase
 
   public async execute(input: ICreateScheduleInput): Promise<void> {
     if (input.id === input.userDoctorId) {
-      throw new InvalidSchedulingException(
-        "User id can't be same as doctor id!"
-      );
+      throw new InvalidSchedulingException("User id can't be same as doctor id!");
     }
 
     const scheduledDate = moment(this.cleanInputDate(input.scheduleDate));
@@ -34,9 +30,7 @@ export class CreateScheduleUsecase
     todayWithoutSeconds.tz("America/Sao_Paulo").format("ha z");
 
     if (scheduledDate.diff(todayWithoutSeconds) < 0) {
-      throw new InvalidSchedulingException(
-        "Scheduled date can't be before today!"
-      );
+      throw new InvalidSchedulingException("Scheduled date can't be before today!");
     }
 
     input.scheduleDate = scheduledDate.toDate();
@@ -45,18 +39,12 @@ export class CreateScheduleUsecase
 
     this.checkUserIsDoctor(user);
 
-    await this.checkUserAlreadyHasSchedulingSameDate(
-      user.getId()!,
-      input.scheduleDate
-    );
+    await this.checkUserAlreadyHasSchedulingSameDate(user.getId()!, input.scheduleDate);
 
     const doctor = await this.findUser(input.userDoctorId);
     this.checkDoctorIsDoctor(doctor);
 
-    await this.checkDoctorAlreadyHasSchedulingSameDate(
-      doctor.getId()!,
-      input.scheduleDate
-    );
+    await this.checkDoctorAlreadyHasSchedulingSameDate(doctor.getId()!, input.scheduleDate);
 
     const newScheduling = this.fillScheduling(user, doctor, input);
     await this.persistScheduling(newScheduling);
@@ -86,12 +74,7 @@ export class CreateScheduleUsecase
   private cleanInputDate(inputStringDate: Date): Date {
     const dateFormatted = new Date(inputStringDate);
 
-    dateFormatted.setHours(
-      dateFormatted.getHours(),
-      dateFormatted.getMinutes(),
-      0,
-      0
-    );
+    dateFormatted.setHours(dateFormatted.getHours(), dateFormatted.getMinutes(), 0, 0);
 
     return dateFormatted;
   }
@@ -112,41 +95,23 @@ export class CreateScheduleUsecase
       ?.some((userRole) => userRole.getRoleEntity()?.getName() === "DOCTOR");
 
     if (!isUserDoctor) {
-      throw new InvalidSchedulingException(
-        "Doctor id provided is not from an user doctor!"
-      );
+      throw new InvalidSchedulingException("Doctor id provided is not from an user doctor!");
     }
   }
 
-  private async checkUserAlreadyHasSchedulingSameDate(
-    userId: string,
-    scheduleDate: Date
-  ): Promise<void> {
-    const scheduling = await this.schedulingRepository.findByUserAndDate(
-      userId,
-      scheduleDate
-    );
+  private async checkUserAlreadyHasSchedulingSameDate(userId: string, scheduleDate: Date): Promise<void> {
+    const scheduling = await this.schedulingRepository.findByUserAndDate(userId, scheduleDate);
 
     if (scheduling !== null) {
-      throw new InvalidSchedulingException(
-        "User has already an scheduling on this same date!"
-      );
+      throw new InvalidSchedulingException("User has already an scheduling on this same date!");
     }
   }
 
-  private async checkDoctorAlreadyHasSchedulingSameDate(
-    doctorId: string,
-    scheduleDate: Date
-  ): Promise<void> {
-    const scheduling = await this.schedulingRepository.findByDoctorAndDate(
-      doctorId,
-      scheduleDate
-    );
+  private async checkDoctorAlreadyHasSchedulingSameDate(doctorId: string, scheduleDate: Date): Promise<void> {
+    const scheduling = await this.schedulingRepository.findByDoctorAndDate(doctorId, scheduleDate);
 
     if (scheduling !== null) {
-      throw new InvalidSchedulingException(
-        "Doctor has already an scheduling on this same date!"
-      );
+      throw new InvalidSchedulingException("Doctor has already an scheduling on this same date!");
     }
   }
 
@@ -172,11 +137,7 @@ export class CreateScheduleUsecase
     await this.schedulingRepository.persist(scheduling);
   }
 
-  private async notifyUser(
-    user: UserEntity,
-    doctor: UserEntity,
-    scheduledAt: Date
-  ): Promise<void> {
+  private async notifyUser(user: UserEntity, doctor: UserEntity, scheduledAt: Date): Promise<void> {
     const title = "Novo agendamento";
 
     const message = `
@@ -211,11 +172,7 @@ export class CreateScheduleUsecase
     });
   }
 
-  private async notifyDoctor(
-    user: UserEntity,
-    doctor: UserEntity,
-    scheduledAt: Date
-  ): Promise<void> {
+  private async notifyDoctor(user: UserEntity, doctor: UserEntity, scheduledAt: Date): Promise<void> {
     const title = "Novo agendamento";
 
     const message = `
