@@ -24,11 +24,11 @@
           prepend-icon="mdi-calendar-check-outline"
           :disabled="hasAppointmentEnded"
         >
-          {{ hasAppointmentEnded ? "Finished" : "Finish" }}
+          {{ appointmentStatus }}
         </v-btn>
 
         <v-btn
-          v-if="!hasAppointmentEnded"
+          v-if="!hasAppointmentEnded && isAppointmentCancelable"
           @click="cancelSchedule"
           color="blue-grey-lighten-4"
           height="40"
@@ -86,6 +86,7 @@
 import { actionTypes } from "@/lib/store/types/actionTypes";
 import { useToast } from "vue-toastification";
 import { AxiosError } from "axios";
+import moment from "moment-timezone";
 
 export default {
   name: "AppointmentCardPacient",
@@ -109,13 +110,25 @@ export default {
     };
   },
   computed: {
+    isAppointmentCancelable() {
+      const now = moment.tz(moment.now(), "America/Sao_Paulo");
+      const schedulingDate = moment.tz(this.scheduled.scheduledAt, "America/Sao_Paulo");
+      const schedulingMinutesDiff = schedulingDate.diff(now, "minutes");
+
+      return schedulingMinutesDiff >= 60;
+    },
     hasAppointmentEnded() {
       return !this.scheduled.active || !!this.scheduled.finishedAt;
+    },
+    appointmentStatus() {
+      if (this.scheduled.active && !this.scheduled.finishedAt) return "Finish";
+      if (this.scheduled.active && !!this.scheduled.finishedAt) return "Finished";
+      if (!this.scheduled.active && !this.scheduled.finishedAt) return "Cancelled";
     },
   },
   methods: {
     finishSchedule() {},
-    async cancelSchedule(id) {
+    async cancelSchedule() {
       try {
         await this.$store.dispatch(actionTypes.SCHEDULING.CANCEL_SCHEDULING, {
           isDoctor: true,

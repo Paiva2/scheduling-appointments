@@ -35,6 +35,7 @@
 
       <div class="d-flex ga-3">
         <v-btn
+          v-if="!hasAppointmentEnded"
           @click="openReschedule"
           color="blue-darken-3"
           height="40"
@@ -47,7 +48,7 @@
         </v-btn>
 
         <v-btn
-          v-if="!hasAppointmentEnded"
+          v-if="!hasAppointmentEnded && isAppointmentCancelable"
           @click="cancelSchedule"
           color="blue-grey-lighten-4"
           height="40"
@@ -142,6 +143,13 @@ export default {
     };
   },
   computed: {
+    isAppointmentCancelable() {
+      const now = moment.tz(moment.now(), "America/Sao_Paulo");
+      const schedulingDate = moment.tz(this.scheduled.scheduledAt, "America/Sao_Paulo");
+      const schedulingMinutesDiff = schedulingDate.diff(now, "minutes");
+
+      return schedulingMinutesDiff >= 60;
+    },
     hasAppointmentEnded() {
       return !this.scheduled.active || !!this.scheduled.finishedAt;
     },
