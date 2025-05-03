@@ -48,15 +48,17 @@
         </v-btn>
 
         <v-btn
-          v-if="!hasAppointmentEnded && isAppointmentCancelable"
+          :disabled="hasAppointmentEnded || !isAppointmentCancelable"
           @click="cancelSchedule"
-          color="blue-grey-lighten-4"
+          :color="
+            hasAppointmentEnded || !isAppointmentCancelable ? 'blue-grey-lighten-2' : 'blue-grey-lighten-4'
+          "
           height="40"
           tile
           flat
           prepend-icon="mdi-calendar-remove-outline"
         >
-          Cancel
+          {{ appointmentAction }}
         </v-btn>
       </div>
     </div>
@@ -114,6 +116,7 @@ import ScheduleDatePickerDialog from "./dialog/ScheduleDatePickerDialog.vue";
 import { actionTypes } from "@/lib/store/types/actionTypes";
 import { useToast } from "vue-toastification";
 import { AxiosError } from "axios";
+import moment from "moment-timezone";
 
 export default {
   name: "AppointmentCardDoctor",
@@ -152,6 +155,11 @@ export default {
     },
     hasAppointmentEnded() {
       return !this.scheduled.active || !!this.scheduled.finishedAt;
+    },
+    appointmentAction() {
+      if (this.scheduled.active && !this.scheduled.finishedAt) return "Cancel";
+      if (this.scheduled.active && !!this.scheduled.finishedAt) return "Finished";
+      if (!this.scheduled.active && !this.scheduled.finishedAt) return "Cancelled";
     },
   },
   methods: {
